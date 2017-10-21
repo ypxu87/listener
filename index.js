@@ -1,4 +1,1 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
-
-AppRegistry.registerComponent('listener', () => App);
+import Listener from './script/Listener'
