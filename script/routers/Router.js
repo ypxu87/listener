@@ -3,9 +3,11 @@ import { StackNavigator} from 'react-navigation';
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
 
 import MainPage from '../pages/MainPage.js'
+import DetailPage from "../pages/DetailPage";
 
 const Router = StackNavigator({
-    MainPage: {screen: MainPage,}
+    MainPage: {screen: MainPage},
+    DetailPage:{screen: DetailPage}
 },{
     //导航视觉效果
     navigationOptions:{
