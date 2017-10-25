@@ -5,7 +5,6 @@ import configureStore from './store/ConfigyreStore'
 import AppWithNavigatior from './AppWithNavigator'
 import CodePush from "react-native-code-push";
 require('./utils/StorageMgr.js')
-import DeviceInfo from 'react-native-device-info';
 import {setHttpRequestHeader} from "./network/HttpRequest"
 
 export default class Listener extends Component {

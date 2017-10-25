@@ -2,12 +2,14 @@ import { Animated, Easing, Platform } from 'react-native';
 import { StackNavigator} from 'react-navigation';
 import CardStackStyleInterpolator from 'react-navigation/src/views/CardStack/CardStackStyleInterpolator';
 
-import MainPage from '../pages/MainPage.js'
+import MainPage from '../pages/MainPage.js';
 import DetailPage from "../pages/DetailPage";
+import PlayerPage from "../pages/PlayerPage"
 
 const Router = StackNavigator({
     MainPage: {screen: MainPage},
-    DetailPage:{screen: DetailPage}
+    DetailPage:{screen: DetailPage},
+    PlayerPage:{screen: PlayerPage}
 },{
     //导航视觉效果
     navigationOptions:{

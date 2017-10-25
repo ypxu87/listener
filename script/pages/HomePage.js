@@ -49,6 +49,9 @@ class HomePage extends Component {
     _gotoDetailPage = ()=>{
         this.props.navigation.navigate('DetailPage')
     }
+    _gotoPlayerPage = ()=>{
+        this.props.navigation.navigate('PlayerPage')
+    }
     render() {
         return (
             <ScrollView >
@@ -86,7 +89,7 @@ class HomePage extends Component {
                         </View>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
+                <TouchableOpacity onPress={()=>this._gotoPlayerPage()}>
                     <View style={styles.itemStyle}>
                         <Image source={require("../../images/1.jpg")} style={styles.imageStyle}/>
                         <View style={styles.subItemStyle}>
