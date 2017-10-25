@@ -7,6 +7,7 @@ const Brief = Item.Brief;
 class HomePage extends Component {
     static navigationOptions = (arg)=>({
         title: '发现',
+        header:null,
         tabBarIcon: () => (
             <View>
                 <Image

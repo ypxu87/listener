@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 class DownloadPage extends Component {
     static navigationOptions = (arg)=>({
         title: '下载',
+        header:null,
     })
     constructor(props){
         super(props)
