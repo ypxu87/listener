@@ -9,6 +9,7 @@ import {
     Slider,
     TouchableOpacity,
     ScrollView,
+    ListView,
     ActivityIndicator,
     Animated,
     Easing,
@@ -366,9 +367,11 @@ class PlayerPage extends Component {
             return (
                 <View style={styles.container}>
 
-                    <View style = {{position:'absolute',width: width}}>
+                    <View style = {{position:'absolute',width: width,flexDirection:'column'}}>
+                        {/*作者-歌名*/}
+                        <Text style={{fontSize:24,width:'100%',textAlign:'center',marginTop:50}}>{this.state.author} - {this.state.title}</Text>
                         {/*胶片光盘*/}
-                        <Image source={require('../../images/player/胶片盘.png')} style={{width:220,height:220,marginTop:80,alignSelf:'center'}}/>
+                        <Image source={require('../../images/player/胶片盘.png')} style={{width:220,height:220,marginTop:30,alignSelf:'center'}}/>
 
                         {/*旋转小图*/}
                         <Animated.Image
@@ -393,8 +396,6 @@ class PlayerPage extends Component {
                         />
                         {/*歌曲信息*/}
                         <View style={styles.playingInfo}>
-                            {/*作者-歌名*/}
-                            <Text>{this.state.author} - {this.state.title}</Text>
                             {/*时间*/}
                             <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
                         </View>
