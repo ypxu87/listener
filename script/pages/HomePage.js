@@ -11,11 +11,12 @@ class HomePage extends Component {
         tabBarIcon: () => (
             <View>
                 <Image
-                    source={require('../../images/homeActivity.png')}
+                    source={require('../../images/home.png')}
                     style={{
                         width: 20,
                         height: 20,
-                        top:-7
+                        top:-7,
+                        tintColor: 'blue'
                     }}
                 />
             </View>
@@ -59,21 +60,21 @@ class HomePage extends Component {
                     afterChange={index => console.log('slide to', index)}>
                     <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
                         <Image
-                            source={{uri:`https://zos.alipayobjects.com/rmsportal/AiyWuByWklrrUDlFignR.png`}}
+                            source={require('../../images/a.jpg')}
                                 style={{width: '100%', height: 200}}
                                 />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <Image
-                        source={{uri:`https://zos.alipayobjects.com/rmsportal/TekJlZRVCjLFexlOCuWn.png`}}
-                        style={{width: '100%', height: 200}}
-                    />
+                        <Image
+                            source={require('../../images/b.jpg')}
+                            style={{width: '100%', height: 200}}
+                        />
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <Image
-                        source={{uri:`https://zos.alipayobjects.com/rmsportal/IJOtIlfsYdTyaDTRVrLI.png`}}
-                        style={{width: '100%', height: 200}}
-                    />
+                        <Image
+                            source={require('../../images/c.jpg')}
+                            style={{width: '100%', height: 200}}
+                        />
                     </TouchableOpacity>
                 </Carousel>
                 <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
