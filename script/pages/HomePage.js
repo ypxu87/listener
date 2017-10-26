@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View,Image,ListView,StyleSheet,Text,ScrollView,TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import {Carousel,List} from 'antd-mobile'
+import {httpRequestAction} from "../actions/HttpRequestAction";
 const Item = List.Item;
 const Brief = Item.Brief;
 class HomePage extends Component {
@@ -52,7 +53,12 @@ class HomePage extends Component {
     _gotoPlayerPage = ()=>{
         this.props.navigation.navigate('PlayerPage')
     }
+    componentDidMount(){
+        this.props.getListDate({type:'recommend'})
+    }
     render() {
+        var {listData} = this.props;
+        console.log("listData",listData)
         return (
             <ScrollView >
                 <Carousel
@@ -162,9 +168,13 @@ const styles = StyleSheet.create({
         justifyContent:'space-around'
     }
 });
+const mapStateToProps = state => ({
+    listData: state.httpRequest.listDate,
+})
 const mapDispatchToProps = (dispatch)=>{
     return {
-        dispatch
+        dispatch,
+        getListDate:(config)=>dispatch(httpRequestAction('getListDate',config,{listName:'listDate'})),
     }
 }
-export default connect(null,mapDispatchToProps)(HomePage)
+export default connect(mapStateToProps,mapDispatchToProps)(HomePage)

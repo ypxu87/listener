@@ -15,6 +15,7 @@ import {
     Easing,
     InteractionManager
 } from 'react-native'
+import {WhiteSpace} from 'antd-mobile'
 import {connect} from 'react-redux';
 var {width,height} = Dimensions.get('window');
 import Video from 'react-native-video'
@@ -396,14 +397,11 @@ class PlayerPage extends Component {
                         />
                         {/*歌曲信息*/}
                         <View style={styles.playingInfo}>
-                            {/*时间*/}
-                            <Text>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
-                        </View>
-                        {/*播放模式*/}
-                        <View style = {{marginTop: 5,marginBottom:5,marginLeft: 20}}>
-                            <TouchableOpacity onPress={()=>this.playModel(this.state.playModel)}>
+                            <TouchableOpacity onPress={()=>this.playModel(this.state.playModel)} style={{marginTop:10}}>
                                 <Image source={this.state.btnModel} style={{width:20,height:20}}/>
                             </TouchableOpacity>
+                            {/*时间*/}
+                            <Text style={{marginTop:10}}>{this.formatTime(Math.floor(this.state.currentTime))} - {this.formatTime(Math.floor(this.state.duration))}</Text>
                         </View>
                         {/*进度条*/}
                         <Slider
@@ -437,8 +435,52 @@ class PlayerPage extends Component {
                                 <Image source={require('../../images/player/下一首.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                        <ScrollView style={{marginTop:20,backgroundColor:'white',width:'94%',height:200,borderRadius:4,marginLeft:'3%'}}>
+                                <View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>
+                                    <TouchableOpacity style={{flex:8}}>
+                                        <Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity  style={{flex:1}}>
+                                        <Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>
+                                    </TouchableOpacity>
+                                </View>
+                                <View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/>
+                            <View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>
+                                <TouchableOpacity style={{flex:8}}>
+                                    <Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity  style={{flex:1}}>
+                                    <Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>
+                                </TouchableOpacity>
+                            </View>
+                            <View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>
+                            <TouchableOpacity style={{flex:8}}>
+                                <Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity  style={{flex:1}}>
+                                <Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>
+                            </TouchableOpacity>
+                        </View>
+                            <View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>
+                            <TouchableOpacity style={{flex:8}}>
+                                <Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity  style={{flex:1}}>
+                                <Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>
+                            </TouchableOpacity>
+                        </View>
+                            <View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>
+                            <TouchableOpacity style={{flex:8}}>
+                                <Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity  style={{flex:1}}>
+                                <Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>
+                            </TouchableOpacity>
+                        </View>
+                            <View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/>
 
+                        </ScrollView>
+                    </View>
                 </View>
             )
         }

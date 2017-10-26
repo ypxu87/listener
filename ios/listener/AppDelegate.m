@@ -9,7 +9,7 @@
 
 #import "AppDelegate.h"
 #import <CodePush/CodePush.h>
-
+#import <AVFoundation/AVFoundation.h>
 #import <React/RCTBundleURLProvider.h>
 #import <React/RCTRootView.h>
 
@@ -38,14 +38,9 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
 
-   AVAudioSession *session = [AVAudioSession sharedInstance];
-   NSError *error = nil;
-   if (![session setCategory:AVAudioSessionCategoryPlayback error:&error]) {
-       NSLog(@"???????? = %@",[error localizedDescription]);
-   }
-   if (![session setActive:YES error:&error]) {
-       NSLog(@"??????");
-   }
+  AVAudioSession *audioSession=[AVAudioSession sharedInstance];
+  [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
+  [audioSession setActive:YES error:nil];
   return YES;
 }
 

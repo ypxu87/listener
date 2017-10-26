@@ -6,6 +6,10 @@
         <array>
             <string>audio</string>
         </array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -46,9 +50,9 @@
 	<string></string>
 	<key>NSAppTransportSecurity</key>
 	<dict>
-    		<key>NSAllowsArbitraryLoads</key>
-    		<true/>
-    	</dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
 	<key>CodePushDeploymentKey</key>
 	<string>deployment-key-here</string>
 </dict>
