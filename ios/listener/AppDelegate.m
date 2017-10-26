@@ -37,6 +37,15 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+
+   AVAudioSession *session = [AVAudioSession sharedInstance];
+   NSError *error = nil;
+   if (![session setCategory:AVAudioSessionCategoryPlayback error:&error]) {
+       NSLog(@"???????? = %@",[error localizedDescription]);
+   }
+   if (![session setActive:YES error:&error]) {
+       NSLog(@"??????");
+   }
   return YES;
 }
 
