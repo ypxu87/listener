@@ -79,8 +79,7 @@ class HomePage extends Component {
                         autoplay={true}
                         infinite
                         selectedIndex={1}
-                        swipeSpeed={35}
-                        afterChange={index => console.log('slide to', index)}>
+                        swipeSpeed={35}>
                         {
                             recommendList.map(function (item,index) {
                                     return (

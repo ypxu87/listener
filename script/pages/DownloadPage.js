@@ -27,20 +27,20 @@ class DownloadPage extends Component {
         // 音频
         const downloadDest = `${RNFS.MainBundlePath}/${((Math.random() * 1000) | 0)}.mp3`;
         // http://wvoice.spriteapp.cn/voice/2015/0902/55e6fc6e4f7b9.mp3
-        const formUrl = 'http://localhost:3000/listen/audio/test.mp3';
+        const formUrl = 'http://webux.webtime.club/test.mp3';
         const options = {
             fromUrl: formUrl,
             toFile: downloadDest,
             headers:{
-                'Range': 'bytes=500-600'
+                "Range":"bytes=0-200000000"
             },
             background: true,
             begin: (res) => {
                 console.log('begin', res);
                 console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-                setInterval(function () {
-                    RNFS.stat(downloadDest).then((result)=>{console.log('filesize=',result.size)})
-                },250)
+                // setInterval(function () {
+                //     RNFS.stat(downloadDest).then((result)=>{console.log('filesize=',result.size)})
+                // },250)
             },
             progress: (res) => {
 
@@ -64,6 +64,38 @@ class DownloadPage extends Component {
             console.log(error);
         }
     }
+    // componentDidMount(){
+        // var xhr = new XMLHttpRequest();
+        // var blob = xhr.response;
+        // var percentComplete = ''
+        // xhr.open("GET", "http://webux.webtime.club/test.mp3", true)
+        // //xhr.setRequestHeader('Range','bytes=0-2000000')
+        // //xhr.setRequestHeader("Content-Type:","application/octet-stream")
+        // //监听进度事件
+        // xhr.addEventListener("progress", function (evt) {
+        //     if (evt.lengthComputable) {
+        //         percentComplete = evt.loaded / evt.total;
+        //         if(percentComplete>0.5)
+        //             xhr.abort()
+        //         console.log(percentComplete);
+        //     }
+        // }, false);
+        // xhr.addEventListener("loadend", function (evt) {
+        //         console.log("loadend"+percentComplete,evt);
+        // }, false);
+        //
+        // xhr.addEventListener("success", function (evt) {
+        //     var respond = xhr.response;
+        //     console.log(respond)
+        // }, false);
+        // xhr.responseType = "blob";
+        // xhr.onreadystatechange = function () {
+        //     if (xhr.readyState === 4 && xhr.status === 200) {
+        //
+        //     }
+        // };
+        // xhr.send();
+    // }
     render() {
         return (
             <View style={{flexDirection:'column'}}>
