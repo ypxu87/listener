@@ -1,27 +1,11 @@
 const HttpProtocolConfig = {
-    "LOGIN":{
-        "method":"POST",             //接口方位类型 get post
-        "url":"user/login",   //接口url,结尾不需问号
-    },
-    "register":{
-        "method":"POST",
-        "url":"user/register"
-    },
-    "takeBackPwd":{
-        "method":"POST",
-        "url":"user/takeBackPwd"
-    },
     "getListDate":{
         "method":"GET",
         "url":"listen/list"
     },
-    "resetpwd":{
-        "method":"POST",
-        "url":"user/resetpwd"
-    },
-    "optTeachers":{
+    "getDetailData":{
         "method":"GET",
-        "url":"app/optTeachers"
+        "url":"listen/detail"
     },
     "getTeacherById":{
         "method":"GET",

@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {View,Image,Text,ScrollView,TouchableOpacity} from 'react-native';
 import {connect} from 'react-redux';
 import { Progress, Button} from 'antd-mobile';
+import RNFS from 'react-native-fs';
 class DownloadPage extends Component {
     static navigationOptions = (arg)=>({
         title: '下载',
@@ -21,6 +22,47 @@ class DownloadPage extends Component {
     })
     constructor(props){
         super(props)
+    }
+    componentDidMount(){
+        // 音频
+        const downloadDest = `${RNFS.MainBundlePath}/${((Math.random() * 1000) | 0)}.mp3`;
+        // http://wvoice.spriteapp.cn/voice/2015/0902/55e6fc6e4f7b9.mp3
+        const formUrl = 'http://localhost:3000/listen/audio/test.mp3';
+        const options = {
+            fromUrl: formUrl,
+            toFile: downloadDest,
+            headers:{
+                'Range': 'bytes=500-600'
+            },
+            background: true,
+            begin: (res) => {
+                console.log('begin', res);
+                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+                setInterval(function () {
+                    RNFS.stat(downloadDest).then((result)=>{console.log('filesize=',result.size)})
+                },250)
+            },
+            progress: (res) => {
+
+                let pro = res.bytesWritten / res.contentLength;
+
+                console.log("progress",pro)
+            }
+        };
+        try {
+            const ret = RNFS.downloadFile(options);
+            ret.promise.then(res => {
+                console.log('success', res);
+
+                console.log('file://' + downloadDest)
+
+            }).catch(err => {
+                console.log('err', err);
+            });
+        }
+        catch (e) {
+            console.log(error);
+        }
     }
     render() {
         return (

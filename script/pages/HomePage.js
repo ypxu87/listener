@@ -47,91 +47,75 @@ class HomePage extends Component {
             ]
         }
     }
-    _gotoDetailPage = ()=>{
-        this.props.navigation.navigate('DetailPage')
+    _gotoDetailPage = (data)=>{
+        this.props.navigation.navigate('DetailPage',data)
     }
     _gotoPlayerPage = ()=>{
-        this.props.navigation.navigate('PlayerPage')
+        this.props.navigation.navigate('PlayerPage',data)
     }
     componentDidMount(){
-        this.props.getListDate({type:'recommend'})
+        this.props.getListDate({type:'all'})
     }
     render() {
+        var _self = this;
         var {listData} = this.props;
         console.log("listData",listData)
+        var recommendList = new Array();
+        var hotspotList = new Array();
+        if(listData){
+            for(var i=0;i<listData.length;i++){
+                if(listData[i].type=="recommend"){
+                    recommendList.push(listData[i])
+                }else if(listData[i].type=="hotspot"){
+                    hotspotList.push(listData[i])
+                }
+            }
+        }
+
         return (
-            <ScrollView >
-                <Carousel
-                    autoplay={true}
-                    infinite
-                    selectedIndex={1}
-                    swipeSpeed={35}
-                    afterChange={index => console.log('slide to', index)}>
-                    <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                        <Image
-                            source={require('../../images/a.jpg')}
-                                style={{width: '100%', height: 200}}
-                                />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                        <Image
-                            source={require('../../images/b.jpg')}
-                            style={{width: '100%', height: 200}}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                        <Image
-                            source={require('../../images/c.jpg')}
-                            style={{width: '100%', height: 200}}
-                        />
-                    </TouchableOpacity>
-                </Carousel>
-                <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <View style={styles.itemStyle}>
-                        <Image source={require("../../images/3.jpg")} style={styles.imageStyle}/>
-                        <View style={styles.subItemStyle}>
-                            <Text style={{marginTop:5, fontSize:17}}>这是一篇好文章</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>简介：这篇文章主要是描述xxxxxxx</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this._gotoPlayerPage()}>
-                    <View style={styles.itemStyle}>
-                        <Image source={require("../../images/1.jpg")} style={styles.imageStyle}/>
-                        <View style={styles.subItemStyle}>
-                            <Text style={{marginTop:5, fontSize:17}}>这是一篇好文章</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>简介：这篇文章主要是描述xxxxxxx</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <View style={styles.itemStyle}>
-                        <Image source={require("../../images/2.jpg")} style={styles.imageStyle}/>
-                        <View style={styles.subItemStyle}>
-                            <Text style={{marginTop:5, fontSize:17}}>这是一篇好文章</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>简介：这篇文章主要是描述xxxxxxx</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <View style={styles.itemStyle}>
-                        <Image source={require("../../images/3.jpg")} style={styles.imageStyle}/>
-                        <View style={styles.subItemStyle}>
-                            <Text style={{marginTop:5, fontSize:17}}>这是一篇好文章</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>简介：这篇文章主要是描述xxxxxxx</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>this._gotoDetailPage()}>
-                    <View style={styles.itemStyle}>
-                        <Image source={require("../../images/4.jpg")} style={styles.imageStyle}/>
-                        <View style={styles.subItemStyle}>
-                            <Text style={{marginTop:5, fontSize:17}}>这是一篇好文章</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>简介：这篇文章主要是描述xxxxxxx</Text>
-                        </View>
-                    </View>
-                </TouchableOpacity>
-            </ScrollView>
+            listData ? (
+                <ScrollView >
+                    <Carousel
+                        autoplay={true}
+                        infinite
+                        selectedIndex={1}
+                        swipeSpeed={35}
+                        afterChange={index => console.log('slide to', index)}>
+                        {
+                            recommendList.map(function (item,index) {
+                                    return (
+                                        <TouchableOpacity key={index} onPress={() => _self._gotoDetailPage(item)}>
+                                            <Image
+                                                source={{uri: item.photo}}
+                                                style={{width: '100%', height: 200}}
+                                            />
+                                            <Text style={{position:"absolute",bottom:30,fontSize:20,color:'white',
+                                                backgroundColor:'transparent',left:10,fontWeight:'bold'}}>
+                                                {item.title}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    )
+                            })
+                        }
+                    </Carousel>
+                    {
+                        hotspotList.map(function (item,index) {
+                                return (
+                                    <TouchableOpacity key={item._id} onPress={()=>_self._gotoDetailPage(item)}>
+                                        <View style={styles.itemStyle}>
+                                            <Image source={{uri:item.thumbnail}} style={styles.imageStyle}/>
+                                            <View style={styles.subItemStyle}>
+                                                <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
+                                                <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                                            </View>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                        })
+                    }
+                </ScrollView>
+            ) :<View/>
+
         );
     }
 }

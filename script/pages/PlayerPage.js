@@ -393,7 +393,7 @@ class PlayerPage extends Component {
                             paused={this.state.pause}
                             onProgress={(e) => this.onProgress(e)}
                             onLoad={(e) => this.onLoad(e)}
-                            playInBackground={false}
+                            playInBackground={true}
                         />
                         {/*歌曲信息*/}
                         <View style={styles.playingInfo}>

@@ -17,6 +17,14 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+  NSError *setCategoryError = nil;
+  BOOL success = [audioSession setCategory:AVAudioSessionCategoryPlayback error:&setCategoryError];
+  if (!success) { /* handle the error condition */ }
+  NSError *activationError = nil;
+  success = [audioSession setActive:YES error:&activationError];
+  if (!success) { /* handle the error condition */ }
+
   NSURL *jsCodeLocation;
 
   
@@ -25,7 +33,7 @@
     #else
         jsCodeLocation = [CodePush bundleURL];
     #endif
-
+  
   RCTRootView *rootView = [[RCTRootView alloc] initWithBundleURL:jsCodeLocation
                                                       moduleName:@"listener"
                                                initialProperties:nil
@@ -37,10 +45,7 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
-
-  AVAudioSession *audioSession=[AVAudioSession sharedInstance];
-  [audioSession setCategory:AVAudioSessionCategoryPlayback error:nil];
-  [audioSession setActive:YES error:nil];
+  
   return YES;
 }
 
