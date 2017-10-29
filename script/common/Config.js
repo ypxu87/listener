@@ -1,5 +1,5 @@
 const Config = {
-    urlBase : "http://localhost:3000/" //连接的网址
+    urlBase : "http://192.168.0.101:4000/" //连接的网址
 
 }
 

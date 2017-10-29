@@ -3,6 +3,7 @@ import {View,Image,Text,StyleSheet,ScrollView,TouchableOpacity} from 'react-nati
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
 import {httpRequestAction} from "../actions/HttpRequestAction";
+import {addToDownloadList,updateDownloadList} from '../actions/DownloadAction'
 
 class DetailPage extends Component {
     static navigationOptions = (arg)=>({
@@ -15,6 +16,18 @@ class DetailPage extends Component {
     }
     componentDidMount(){
         this.props.getDetailData({_id:this.info._id})
+    }
+    _updateDownloadList(data){
+        var {downloadList,updateDownloadList} = this.props
+        var index = downloadList.findIndex(function (value,index,arr) {
+            return value._id==data._id
+        })
+        if(index==-1){
+            data.status="waiting";
+            data.progress=0;
+            downloadList.push(data);
+            updateDownloadList(downloadList,true)
+        }
     }
     render() {
         var {detailData} = this.props
@@ -41,7 +54,7 @@ class DetailPage extends Component {
                                     <Image source={require('../../images/play-circle-fill.png')} style={{width:30,height:30,marginTop:10}}></Image>
                                 </TouchableOpacity>
                             </View>
-                            <TouchableOpacity onPress={()=>this.props.goBack()} style={{height:'100%',flex:1}}>
+                            <TouchableOpacity onPress={()=>this._updateDownloadList(detailData)} style={{height:'100%',flex:1}}>
                                 <Image source={require('../../images/download.png')} style={{width:20,height:20,marginTop:15}}></Image>
                             </TouchableOpacity>
                         </View>
@@ -85,12 +98,14 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
     detailData: state.httpRequest.detailData,
+    downloadList : state.download.downloadList
 })
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch:dispatch,
         goBack: ()=>dispatch( NavigationActions.back() ),
-        getDetailData:(config)=>dispatch(httpRequestAction('getDetailData',config,{dataName:'detailData'}))
+        getDetailData:(config)=>dispatch(httpRequestAction('getDetailData',config,{dataName:'detailData'})),
+        updateDownloadList:(downloadList,saveStorage)=>dispatch(updateDownloadList(downloadList,saveStorage))
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(DetailPage)
