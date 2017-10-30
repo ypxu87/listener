@@ -24,6 +24,8 @@ const MainPage = TabNavigator({
                 padding: 5
             },
             labelStyle:{margin:0},
+            inactiveTintColor: 'gray',
+            activeTintColor: '#FFDB42',
             indicatorStyle:{ height: 0 },
         }
     }

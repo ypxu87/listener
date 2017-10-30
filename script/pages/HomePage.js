@@ -9,18 +9,9 @@ class HomePage extends Component {
     static navigationOptions = (arg)=>({
         title: '发现',
         header:null,
-        tabBarIcon: () => (
-            <View>
-                <Image
-                    source={require('../../images/home.png')}
-                    style={{
-                        width: 20,
-                        height: 20,
-                        top:-7,
-                        tintColor: 'blue'
-                    }}
-                />
-            </View>
+        tabBarIcon: ({tintColor}) => (<Image source={require('../../images/home.png')} style={{
+            tintColor: tintColor
+        }}/>
         ),
     })
     constructor(props){

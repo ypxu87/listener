@@ -8,17 +8,9 @@ class DownloadPage extends Component {
     static navigationOptions = (arg)=>({
         title: '下载',
         header: null,
-        tabBarIcon: () => (
-            <View>
-                <Image
-                    source={require('../../images/download.png')}
-                    style={{
-                        width: 20,
-                        height: 20,
-                        top:-7,
-                    }}
-                />
-            </View>
+        tabBarIcon: ({tintColor}) => (<Image source={require('../../images/download.png')} style={{
+            tintColor: tintColor
+        }}/>
         ),
     })
     constructor(props){
