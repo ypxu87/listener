@@ -11,6 +11,9 @@ import RNFS from 'react-native-fs'
 class AppWithNavigatior extends Component {
     constructor(props){
         super(props);
+        this.state={
+            audioInfo:null
+        }
     }
 
     componentDidMount(){
@@ -38,11 +41,17 @@ class AppWithNavigatior extends Component {
             }
             updateDownloadList(downloadList,true)
         })
+        this.playerListener = DeviceEventEmitter.addListener('addToPlayer',function (data) {
+            _self.setState({
+                audioInfo:data
+            })
+        })
     }
 
     componentWillUnmount(){
         this.listener.remove()
         this.downloadListener.remove()
+        this.playerListener.remove()
     }
     checkDownload() {
         var {downloadList,updateDownloadList} = this.props;
@@ -183,17 +192,21 @@ class AppWithNavigatior extends Component {
     }
 
     render() {
+        var _self=this
         this.checkDownload();
         const {dispatch, nav} = this.props;
+        var playerView = this.state.audioInfo ? (
+            <Video
+                source={{uri: _self.state.audioInfo.audio}}
+                ref='video'
+                volume={1.0}
+                paused={false}
+                playInBackground={true}
+            />
+        ):(<View/>)
         return (
             <View style={{width:'100%',height:'100%'}}>
-                <Video
-                    source={{uri: 'http://webux.webtime.club/test.mp3'}}
-                    ref='video'
-                    volume={1.0}
-                    paused={false}
-                    playInBackground={true}
-                />
+                {playerView}
                 <Router navigation={addNavigationHelpers({dispatch: dispatch, state: nav})}/>
             </View>
         );
