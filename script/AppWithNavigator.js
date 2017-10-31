@@ -148,10 +148,8 @@ class AppWithNavigatior extends Component {
                             downloadList[itemPosition].progress=pro*100
                             if(pro>0.3){
                                 RNFS.stopDownload(res.jobId)
-                                downloadList[itemPosition].status="pause"
-                                updateDownloadList(downloadList,true);
+                                console.log("stopDownload",res.jobId)
                             }else{
-                                updateDownloadList(downloadList,false);
                             }
                         }
                     };
