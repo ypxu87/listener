@@ -3,6 +3,7 @@ import {View,Image,Text,StyleSheet,ScrollView,TouchableOpacity,DeviceEventEmitte
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
 import {httpRequestAction} from "../actions/HttpRequestAction";
+import * as playerAtion from "../actions/PlayerAction";
 import {addToDownloadList,updateDownloadList} from '../actions/DownloadAction'
 
 class DetailPage extends Component {
@@ -30,7 +31,8 @@ class DetailPage extends Component {
         }
     }
     _addToPlayer(data){
-        DeviceEventEmitter.emit("addToPlayer",data)
+        this.props.updatePlayerData(data)
+        this.props.changePlayerStatus(false)
     }
     render() {
         var {detailData} = this.props
@@ -100,15 +102,18 @@ const styles = StyleSheet.create({
     }
 });
 const mapStateToProps = state => ({
-    detailData: state.httpRequest.detailData,
-    downloadList : state.download.downloadList
+    detailData  : state.httpRequest.detailData,
+    downloadList : state.download.downloadList,
+    curPlayData  : state.player.data
 })
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch:dispatch,
         goBack: ()=>dispatch( NavigationActions.back() ),
         getDetailData:(config)=>dispatch(httpRequestAction('getDetailData',config,{dataName:'detailData'})),
-        updateDownloadList:(downloadList,saveStorage)=>dispatch(updateDownloadList(downloadList,saveStorage))
+        updateDownloadList:(downloadList,saveStorage)=>dispatch(updateDownloadList(downloadList,saveStorage)),
+        updatePlayerData:(data)=>dispatch(playerAtion.updatePlayerData(data)),
+        changePlayerStatus:(status)=>dispatch(playerAtion.changePlayerStatus(status))
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(DetailPage)

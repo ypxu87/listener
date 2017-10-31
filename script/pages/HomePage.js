@@ -42,7 +42,7 @@ class HomePage extends Component {
         this.props.navigation.navigate('DetailPage',data)
     }
     _gotoPlayerPage = ()=>{
-        this.props.navigation.navigate('PlayerPage',data)
+        this.props.navigation.navigate('PlayerPage')
     }
     componentDidMount(){
         this.props.getListDate({type:'all'})
@@ -105,6 +105,11 @@ class HomePage extends Component {
                             })
                         }
                     </ScrollView>
+                    <TouchableOpacity style={{position:'absolute',width:'100%',bottom:_self.props.curPlayData ? 0:-40}} onPress={()=>_self._gotoPlayerPage()}>
+                        <View style={{width:"100%",height:40,backgroundColor:"#d9ddea"}}>
+
+                        </View>
+                    </TouchableOpacity>
                 </View>
             ) :<View/>
 
@@ -146,6 +151,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
     listData: state.httpRequest.listDate,
+    curPlayData  : state.player.data
 })
 const mapDispatchToProps = (dispatch)=>{
     return {

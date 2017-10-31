@@ -4,13 +4,15 @@ import {catchRejectReducer} from '../middlewares/CatchRejectMiddleware'
 import appStateReducer from './AppStateReducer'
 import {httpRequestReducer} from './HttpRequestReducer'
 import {DownloadReducer} from './DownloadReducer'
+import PlayerRuducer from './PlayerRuducer'
 
 const RootReducer = combineReducers({
     nav,
     catchReject : catchRejectReducer,
     appState    : appStateReducer,
     httpRequest : httpRequestReducer,
-    download    : DownloadReducer
+    download    : DownloadReducer,
+    player      : PlayerRuducer
 });
 
 export default RootReducer;

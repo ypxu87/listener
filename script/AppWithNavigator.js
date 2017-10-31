@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, NavigationActions} from 'react-navigation';
 import {getDownloadList,updateDownloadList} from "./actions/DownloadAction";
+import * as playerAction from "./actions/PlayerAction";
 import Router from './routers/Router.js';
 import Video from 'react-native-video';
 import RNFS from 'react-native-fs'
@@ -11,9 +12,6 @@ import RNFS from 'react-native-fs'
 class AppWithNavigatior extends Component {
     constructor(props){
         super(props);
-        this.state={
-            audioInfo:null
-        }
     }
 
     componentDidMount(){
@@ -27,6 +25,8 @@ class AppWithNavigatior extends Component {
             }
             return false;
         })
+
+
         this.props.getDownloadList();
         this.downloadListener = DeviceEventEmitter.addListener('downloadCommand',function (command) {
             var {downloadList,updateDownloadList} = _self.props
@@ -40,11 +40,6 @@ class AppWithNavigatior extends Component {
                 downloadList[index].status="waiting"
             }
             updateDownloadList(downloadList,true)
-        })
-        this.playerListener = DeviceEventEmitter.addListener('addToPlayer',function (data) {
-            _self.setState({
-                audioInfo:data
-            })
         })
     }
 
@@ -188,18 +183,28 @@ class AppWithNavigatior extends Component {
             }
         }
     }
-
+    playerProgress(data){
+        let val = parseInt(data.currentTime)
+        this.props.updatePlayerTrackValue(val)
+    }
+    playerOnload(data){
+        let time= data.duration
+        let duration = Math.floor(time/60)+":"+(time%60/100).toFixed(2).slice(-2)
+        this.props.setPlayerDuration({time,duration})
+    }
     render() {
         var _self=this
         this.checkDownload();
         const {dispatch, nav} = this.props;
-        var playerView = this.state.audioInfo ? (
+        var playerView = this.props.player.data ? (
             <Video
-                source={{uri: _self.state.audioInfo.audio}}
-                ref='video'
+                source={{uri: _self.props.player.data.audio}}
+                ref='player'
                 volume={1.0}
-                paused={false}
+                paused={ _self.props.player.status}
                 playInBackground={true}
+                onProgress={(e) => this.playerProgress(e)}
+                onLoad={(e) => this.playerOnload(e)}
             />
         ):(<View/>)
         return (
@@ -219,7 +224,8 @@ AppWithNavigatior.propTypes = {
 
 const mapStateToProps = state => ({
     nav: state.nav,
-    downloadList : state.download.downloadList
+    downloadList : state.download.downloadList,
+    player  : state.player
 });
 
 const mapDispatchToProps = (dispatch)=>{
@@ -227,7 +233,9 @@ const mapDispatchToProps = (dispatch)=>{
         dispatch,
         getDownloadList:()=>dispatch(getDownloadList()),
         updateDownloadList:(list,saveStorage)=>dispatch(updateDownloadList(list,saveStorage)),
-
+        updatePlayer:(data)=>dispatch(playerAction.updatePlayerData(data)),
+        setPlayerDuration:(duration)=>dispatch(playerAction.playerOnload(duration)),
+        updatePlayerTrackValue:(value)=>dispatch(playerAction.updatePlayerTrackValue(value))
     }
 }
 
