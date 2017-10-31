@@ -65,45 +65,47 @@ class HomePage extends Component {
 
         return (
             listData ? (
-                <ScrollView >
-                    <Carousel
-                        autoplay={true}
-                        infinite
-                        selectedIndex={1}
-                        swipeSpeed={35}>
+                <View style={{width:'100%',height:'100%'}}>
+                    <ScrollView >
+                        <Carousel
+                            autoplay={true}
+                            infinite
+                            selectedIndex={1}
+                            swipeSpeed={35}>
+                            {
+                                recommendList.map(function (item,index) {
+                                        return (
+                                            <TouchableOpacity key={index} onPress={() => _self._gotoDetailPage(item)}>
+                                                <Image
+                                                    source={{uri: item.photo}}
+                                                    style={{width: '100%', height: 200}}
+                                                />
+                                                <Text style={{position:"absolute",bottom:30,fontSize:20,color:'white',
+                                                    backgroundColor:'transparent',left:10,fontWeight:'bold'}}>
+                                                    {item.title}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )
+                                })
+                            }
+                        </Carousel>
                         {
-                            recommendList.map(function (item,index) {
+                            hotspotList.map(function (item,index) {
                                     return (
-                                        <TouchableOpacity key={index} onPress={() => _self._gotoDetailPage(item)}>
-                                            <Image
-                                                source={{uri: item.photo}}
-                                                style={{width: '100%', height: 200}}
-                                            />
-                                            <Text style={{position:"absolute",bottom:30,fontSize:20,color:'white',
-                                                backgroundColor:'transparent',left:10,fontWeight:'bold'}}>
-                                                {item.title}
-                                            </Text>
+                                        <TouchableOpacity key={item._id} onPress={()=>_self._gotoDetailPage(item)}>
+                                            <View style={styles.itemStyle}>
+                                                <Image source={{uri:item.thumbnail}} style={styles.imageStyle}/>
+                                                <View style={styles.subItemStyle}>
+                                                    <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
+                                                    <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                                                </View>
+                                            </View>
                                         </TouchableOpacity>
                                     )
                             })
                         }
-                    </Carousel>
-                    {
-                        hotspotList.map(function (item,index) {
-                                return (
-                                    <TouchableOpacity key={item._id} onPress={()=>_self._gotoDetailPage(item)}>
-                                        <View style={styles.itemStyle}>
-                                            <Image source={{uri:item.thumbnail}} style={styles.imageStyle}/>
-                                            <View style={styles.subItemStyle}>
-                                                <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
-                                                <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
-                                            </View>
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                        })
-                    }
-                </ScrollView>
+                    </ScrollView>
+                </View>
             ) :<View/>
 
         );

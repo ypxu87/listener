@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,Text,StyleSheet,ScrollView,TouchableOpacity} from 'react-native';
+import {View,Image,Text,StyleSheet,ScrollView,TouchableOpacity,DeviceEventEmitter} from 'react-native';
 import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
 import {httpRequestAction} from "../actions/HttpRequestAction";
@@ -29,6 +29,9 @@ class DetailPage extends Component {
             updateDownloadList(downloadList,true)
         }
     }
+    _addToPlayer(data){
+        DeviceEventEmitter.emit("addToPlayer",data)
+    }
     render() {
         var {detailData} = this.props
             return (
@@ -50,7 +53,7 @@ class DetailPage extends Component {
                                     <Text>{detailData.title}</Text>
                                     <Text>时长：5 分钟</Text>
                                 </View>
-                                <TouchableOpacity onPress={()=>this.props.goBack()} style={{height:'100%',flex:1}}>
+                                <TouchableOpacity onPress={()=>this._addToPlayer(detailData)} style={{height:'100%',flex:1}}>
                                     <Image source={require('../../images/play-circle-fill.png')} style={{width:30,height:30,marginTop:10}}></Image>
                                 </TouchableOpacity>
                             </View>
