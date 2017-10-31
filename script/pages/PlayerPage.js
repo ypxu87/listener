@@ -59,7 +59,7 @@ class PlayerPage extends Component {
             this.myAnimate.start(() => {
                 this.myAnimate = Animated.timing(this.state.imgRotate, {
                     toValue: 1,
-                    duration: 6000,
+                    duration: 20000,
                     easing: Easing.inOut(Easing.linear),
                 });
                 this.imgMoving()
@@ -69,7 +69,7 @@ class PlayerPage extends Component {
                 //计算角度比例
                 this.myAnimate = Animated.timing(this.state.imgRotate, {
                     toValue: 1,
-                    duration: (1-oneTimeRotate) * 6000,
+                    duration: (1-oneTimeRotate) * 20000,
                     easing: Easing.inOut(Easing.linear),
                 });
             });
@@ -140,7 +140,6 @@ class PlayerPage extends Component {
     render() {
         //如果未加载出来数据 就一直转菊花
         if (!this.props.player.data) {
-            this.state.isplayBtn=require('../../images/player/stop.png')
             return(
                 <ActivityIndicator
                     animating={this.state.animating}
@@ -148,7 +147,6 @@ class PlayerPage extends Component {
                     size="large" />
             )
         }else{
-            this.state.isplayBtn=require('../../images/player/play.png')
             const spin = this.spinValue.interpolate({
                 inputRange: [0, 1],
                 outputRange: ['0deg', '360deg']
@@ -162,7 +160,7 @@ class PlayerPage extends Component {
                         <Image source={require('../../images/player/blackRing.png')} style={{width:220,height:220,marginTop:30,alignSelf:'center'}}/>
                         <Animated.Image
                             ref = 'myAnimate'
-                            style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: this.props.player.data ? []:[{rotate:spin}]}}
+                            style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: [{rotate:spin}]}}
                             source={{uri: curData.thumbnail}}
                         />
                         <View style={styles.playingInfo}>
