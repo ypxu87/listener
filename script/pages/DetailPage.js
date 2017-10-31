@@ -47,7 +47,7 @@ class DetailPage extends Component {
                             </Text>
                         </ScrollView>
                         <View style={{height:50,width:'100%',backgroundColor:'white',flexDirection:'row'}}>
-                            <TouchableOpacity onPress={()=>this.props.goBack()} style={{height:'100%',flex:1}}>
+                            <TouchableOpacity onPress={()=>this.props.goBack()} style={{height:'100%',flex:1,marginLeft:10}}>
                                 <Image source={require('../../images/back.png')} style={{height:20,marginTop:15}}/>
                             </TouchableOpacity>
                             <View style={{height:'100%',flex:5,flexDirection:'row'}}>

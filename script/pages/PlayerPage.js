@@ -54,7 +54,7 @@ class PlayerPage extends Component {
         this.isGoing = false; //为真旋转
         this.myAnimate = Animated.timing(this.state.imgRotate, {
             toValue: 1,
-            duration: 6000,
+            duration: 20000,
             easing: Easing.inOut(Easing.linear),
         });
 
@@ -93,10 +93,9 @@ class PlayerPage extends Component {
         }
 
     };
-    //上一曲
+    //上一个
     prevAction = (index) =>{
         this.recover()
-        lyrObj = [];
         if(index == -1){
             index = this.state.songs.length - 1 // 如果是第一首就回到最后一首歌
         }
@@ -108,7 +107,6 @@ class PlayerPage extends Component {
     //下一曲
     nextAction = (index) =>{
         this.recover()
-        lyrObj = [];
         if(index == 10){
             index = 0 //如果是最后一首就回到第一首
         }
@@ -123,29 +121,6 @@ class PlayerPage extends Component {
             sliderValue:0,
             currentTime: 0.0
         })
-    }
-    //播放模式 接收传过来的当前播放模式 this.state.playModel
-    playModel = (playModel) =>{
-        playModel++;
-        playModel = playModel == 4 ? 1 : playModel
-        //重新设置
-        this.setState({
-            playModel:playModel
-        })
-        //根据设置后的模式重新设置背景图片
-        if(playModel == 1){
-            this.setState({
-                btnModel:require('../../images/player/列表循环.png'),
-            })
-        }else if(playModel ==  2){
-            this.setState({
-                btnModel:require('../../images/player/随机.png'),
-            })
-        }else{
-            this.setState({
-                btnModel:require('../../images/player/单曲循环.png'),
-            })
-        }
     }
     //播放/暂停
     playAction =() => {
@@ -198,31 +173,22 @@ class PlayerPage extends Component {
                 outputRange: ['0deg', '360deg']
             })
             var curData = this.props.player.data
-            //数据加载出来
             return (
                 <View style={styles.container}>
 
                     <View style = {{position:'absolute',width: width,flexDirection:'column'}}>
-                        {/*作者-歌名*/}
                         <Text style={{fontSize:24,width:'100%',textAlign:'center',marginTop:50}}>{curData.title}</Text>
-                        {/*胶片光盘*/}
                         <Image source={require('../../images/player/blackRing.png')} style={{width:220,height:220,marginTop:30,alignSelf:'center'}}/>
-
-                        {/*旋转小图*/}
                         <Animated.Image
                             ref = 'myAnimate'
                             style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: [{rotate:spin}]}}
                             source={{uri: curData.thumbnail}}
                         />
-                        {/*歌曲信息*/}
                         <View style={styles.playingInfo}>
-                            <TouchableOpacity onPress={()=>this.playModel(this.state.playModel)} style={{marginTop:10}}>
-                                <Image source={this.state.btnModel} style={{width:20,height:20}}/>
-                            </TouchableOpacity>
-                            {/*时间*/}
+                            <View style={{marginTop:10}}>
+                            </View>
                             <Text style={{marginTop:10}}>{this.props.player.duration? this.props.player.duration:'00:00'}</Text>
                         </View>
-                        {/*进度条*/}
                         <Slider
                             ref='slider'
                             style={{ marginLeft: 10, marginRight: 10}}
@@ -254,52 +220,10 @@ class PlayerPage extends Component {
                                 <Image source={require('../../images/player/下一首.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
                         </View>
-                        {/*<ScrollView style={{marginTop:20,backgroundColor:'white',width:'94%',height:200,borderRadius:4,marginLeft:'3%'}}>*/}
-                                {/*<View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>*/}
-                                    {/*<TouchableOpacity style={{flex:8}}>*/}
-                                        {/*<Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>*/}
-                                    {/*</TouchableOpacity>*/}
-                                    {/*<TouchableOpacity  style={{flex:1}}>*/}
-                                        {/*<Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>*/}
-                                    {/*</TouchableOpacity>*/}
-                                {/*</View>*/}
-                                {/*<View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/>*/}
-                            {/*<View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>*/}
-                                {/*<TouchableOpacity style={{flex:8}}>*/}
-                                    {/*<Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>*/}
-                                {/*</TouchableOpacity>*/}
-                                {/*<TouchableOpacity  style={{flex:1}}>*/}
-                                    {/*<Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>*/}
-                                {/*</TouchableOpacity>*/}
-                            {/*</View>*/}
-                            {/*<View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>*/}
-                            {/*<TouchableOpacity style={{flex:8}}>*/}
-                                {/*<Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                            {/*<TouchableOpacity  style={{flex:1}}>*/}
-                                {/*<Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                            {/*<View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>*/}
-                            {/*<TouchableOpacity style={{flex:8}}>*/}
-                                {/*<Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                            {/*<TouchableOpacity  style={{flex:1}}>*/}
-                                {/*<Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                            {/*<View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/><View style={{width:'94%',height:30,marginLeft:'3%',flexDirection:'row',marginTop:5}}>*/}
-                            {/*<TouchableOpacity style={{flex:8}}>*/}
-                                {/*<Text style={{marginLeft:10,marginTop:5,color:'#5a85d4',flex:1}}>赵雷-成都</Text>*/}
-                            {/*</TouchableOpacity>*/}
-                            {/*<TouchableOpacity  style={{flex:1}}>*/}
-                                {/*<Image source={require('../../images/downloadActivity.png')} style={{height:15,width:15,marginTop:5,}}/>*/}
-                            {/*</TouchableOpacity>*/}
-                        {/*</View>*/}
-                            {/*<View  style={{width:'94%',height:1,marginLeft:'3%',backgroundColor:'grey'}}/>*/}
-
-                        {/*</ScrollView>*/}
                     </View>
+                    <TouchableOpacity style={{position:"absolute",top:15,left:15}} onPress={()=>this.props.goBack()}>
+                        <Image source={require('../../images/back.png')}/>
+                    </TouchableOpacity>
                 </View>
             )
         }

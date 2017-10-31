@@ -11,8 +11,7 @@ export default function playerReducer(state = initState, action) {
         case "ADD_DATA_TO_PLAYER":
             state = {
                 ...state,
-                data:action.data,
-                status:action.status
+                data:action.data
             }
             break;
         case "CHANGE_PLAYER_STATUS":

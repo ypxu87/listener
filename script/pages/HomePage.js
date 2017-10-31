@@ -61,6 +61,10 @@ class HomePage extends Component {
                     hotspotList.push(listData[i])
                 }
             }
+            if(!this.props.player.data) {
+                this.props.player.data = listData[0]
+            }
+
         }
 
         return (
@@ -105,9 +109,13 @@ class HomePage extends Component {
                             })
                         }
                     </ScrollView>
-                    <TouchableOpacity style={{position:'absolute',width:'100%',bottom:_self.props.curPlayData ? 0:-40}} onPress={()=>_self._gotoPlayerPage()}>
-                        <View style={{width:"100%",height:40,backgroundColor:"#d9ddea"}}>
-
+                    <TouchableOpacity style={{position:'absolute',width:'100%',bottom:_self.props.player.data ? 0:-50}} onPress={()=>_self._gotoPlayerPage()}>
+                        <View style={{width:"100%",height:50,backgroundColor:"#d9ddea",flexDirection:'row'}}>
+                                <Image source={{uri:this.props.player.data.thumbnail}} style={{width:35,height:35,borderRadius:3,marginTop:7,marginLeft:15}}/>
+                            <View style={{justifyContent:"center"}}>
+                                <Text style={{marginLeft:15,marginTop:3,fontSize:16}}>{this.props.player.data.title}</Text>
+                                <Text style={{marginLeft:15,marginTop:2,fontSize:10}}>{this.props.player.data.create_time}</Text>
+                            </View>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
     listData: state.httpRequest.listDate,
-    curPlayData  : state.player.data
+    player  : state.player
 })
 const mapDispatchToProps = (dispatch)=>{
     return {
