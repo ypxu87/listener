@@ -41,6 +41,9 @@ class AppWithNavigatior extends Component {
             }
             updateDownloadList(downloadList,true)
         })
+        this.playerListener = DeviceEventEmitter.addListener('changePlayeTime',function (value) {
+            _self.refs.player.seek(value)
+        })
     }
 
     componentWillUnmount(){

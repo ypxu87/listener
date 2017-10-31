@@ -31,11 +31,23 @@ class DetailPage extends Component {
         }
     }
     _addToPlayer(data){
-        this.props.updatePlayerData(data)
-        this.props.changePlayerStatus(false)
+        if(this.props.curPlayData._id!=data._id){
+            this.props.updatePlayerData(data)
+            this.props.changePlayerStatus(false)
+        }else{
+            this.props.changePlayerStatus(!this.props.player.status)
+        }
     }
     render() {
         var {detailData} = this.props
+        var playStatusBtn = <View/>
+        if(detailData){
+            playStatusBtn = (
+                (this.props.curPlayData._id==detailData._id&&this.props.player.status==false) ?
+                    <Image source={require('../../images/pause.png')} style={{width:30,height:30,marginTop:10}}></Image> :
+                    <Image source={require('../../images/play-circle-fill.png')} style={{width:30,height:30,marginTop:10}}></Image>
+            )
+        }
             return (
                 detailData ? (
                     <View style={{flexDirection:'column',height:'100%'}}>
@@ -56,7 +68,7 @@ class DetailPage extends Component {
                                     <Text>时长：5 分钟</Text>
                                 </View>
                                 <TouchableOpacity onPress={()=>this._addToPlayer(detailData)} style={{height:'100%',flex:1}}>
-                                    <Image source={require('../../images/play-circle-fill.png')} style={{width:30,height:30,marginTop:10}}></Image>
+                                    {playStatusBtn}
                                 </TouchableOpacity>
                             </View>
                             <TouchableOpacity onPress={()=>this._updateDownloadList(detailData)} style={{height:'100%',flex:1}}>
@@ -104,7 +116,8 @@ const styles = StyleSheet.create({
 const mapStateToProps = state => ({
     detailData  : state.httpRequest.detailData,
     downloadList : state.download.downloadList,
-    curPlayData  : state.player.data
+    curPlayData  : state.player.data,
+    player  : state.player
 })
 const mapDispatchToProps = (dispatch)=>{
     return {

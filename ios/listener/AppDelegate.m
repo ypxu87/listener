@@ -17,7 +17,7 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+  AVAudioSession *audioSession = [AVAudioSession sharedInstance];
   NSError *setCategoryError = nil;
   BOOL success = [audioSession setCategory:AVAudioSessionCategoryPlayback error:&setCategoryError];
   if (!success) { /* handle the error condition */ }

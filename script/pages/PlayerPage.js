@@ -32,22 +32,6 @@ class PlayerPage extends Component {
         super(props);
         this.spinValue = new Animated.Value(0)
         this.state = {
-            songs: [],   //歌曲id数据源
-            playModel:1,  // 播放模式  1:列表循环    2:随机    3:单曲循环
-            btnModel:require('../../images/player/列表循环.png'), //播放模式按钮背景图
-            pic_small:'',    //小图
-            pic_big:'',      //大图
-            file_duration:0,    //歌曲长度
-            song_id:'',     //歌曲id
-            title:'',       //歌曲名字
-            author:'',      //歌曲作者
-            file_link:'',   //歌曲播放链接
-            songLyr:[],     //当前歌词
-            sliderValue: 0,    //Slide的value
-            pause:false,       //歌曲播放/暂停
-            currentTime: 0.0,   //当前时间
-            duration: 0.0,     //歌曲时间
-            currentIndex:0,    //当前第几首
             isplayBtn:require('../../images/player/play.png'),  //播放/暂停按钮背景图
             imgRotate: new Animated.Value(0),
         }
@@ -93,34 +77,28 @@ class PlayerPage extends Component {
         }
 
     };
-    //上一个
-    prevAction = (index) =>{
-        this.recover()
-        if(index == -1){
-            index = this.state.songs.length - 1 // 如果是第一首就回到最后一首歌
+
+    changePlageSource(command){
+        var _self = this
+        var index = this.props.listData.findIndex(function (value,index,arr) {
+            return value._id == _self.props.player.data._id
+        })
+        if(command=="next"){
+            if(index<this.props.listData.length-1){
+                index = index+1
+            }else{
+                index = 0;
+            }
+        }else{
+            if(index>0){
+                index = index-1
+            }else{
+                index = this.props.listData.length-1;
+            }
         }
-        this.setState({
-            currentIndex:index  //更新数据
-        })
-        this.loadSongInfo(index)  //加载数据
-    }
-    //下一曲
-    nextAction = (index) =>{
-        this.recover()
-        if(index == 10){
-            index = 0 //如果是最后一首就回到第一首
-        }
-        this.setState({
-            currentIndex:index,  //更新数据
-        })
-        this.loadSongInfo(index)   //加载数据
-    }
-    //换歌时恢复进度条 和起始时间
-    recover = () =>{
-        this.setState({
-            sliderValue:0,
-            currentTime: 0.0
-        })
+        this.props.updatePlayerTrackValue(0)
+        this.props.updatePlayerData(this.props.listData[index])
+
     }
     //播放/暂停
     playAction =() => {
@@ -141,7 +119,8 @@ class PlayerPage extends Component {
 
 
     componentDidMount() {
-        this.spin()
+            this.spin()
+
     }
 
     //旋转动画
@@ -161,6 +140,7 @@ class PlayerPage extends Component {
     render() {
         //如果未加载出来数据 就一直转菊花
         if (!this.props.player.data) {
+            this.state.isplayBtn=require('../../images/player/stop.png')
             return(
                 <ActivityIndicator
                     animating={this.state.animating}
@@ -168,6 +148,7 @@ class PlayerPage extends Component {
                     size="large" />
             )
         }else{
+            this.state.isplayBtn=require('../../images/player/play.png')
             const spin = this.spinValue.interpolate({
                 inputRange: [0, 1],
                 outputRange: ['0deg', '360deg']
@@ -181,7 +162,7 @@ class PlayerPage extends Component {
                         <Image source={require('../../images/player/blackRing.png')} style={{width:220,height:220,marginTop:30,alignSelf:'center'}}/>
                         <Animated.Image
                             ref = 'myAnimate'
-                            style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: [{rotate:spin}]}}
+                            style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: this.props.player.data ? []:[{rotate:spin}]}}
                             source={{uri: curData.thumbnail}}
                         />
                         <View style={styles.playingInfo}>
@@ -197,18 +178,16 @@ class PlayerPage extends Component {
                             step={1}
                             minimumTrackTintColor='#FFDB42'
                             onValueChange={(value) => {
-                                this.setState({
-                                    currentTime:value
-                                })
-                            }
+                                    this.props.updatePlayerTrackValue(value)
+                                }
                             }
                             onSlidingComplete={(value) => {
-                                this.refs.video.seek(value)
+                                DeviceEventEmitter.emit("changePlayeTime",value)
                             }}
                         />
                         {/*歌曲按钮*/}
                         <View style = {{flexDirection:'row',justifyContent:'space-around'}}>
-                            <TouchableOpacity onPress={()=>this.prevAction(this.state.currentIndex - 1)}>
+                            <TouchableOpacity onPress={()=>this.changePlageSource("before")}>
                                 <Image source={require('../../images/player/上一首.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
 
@@ -216,12 +195,12 @@ class PlayerPage extends Component {
                                 <Image source={this.state.isplayBtn} style={{width:30,height:30}}/>
                             </TouchableOpacity>
 
-                            <TouchableOpacity onPress={()=>this.nextAction(this.state.currentIndex + 1)}>
+                            <TouchableOpacity onPress={()=>this.changePlageSource("next")}>
                                 <Image source={require('../../images/player/下一首.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <TouchableOpacity style={{position:"absolute",top:15,left:15}} onPress={()=>this.props.goBack()}>
+                    <TouchableOpacity style={{position:"absolute",top:30,left:20}} onPress={()=>this.props.goBack()}>
                         <Image source={require('../../images/back.png')}/>
                     </TouchableOpacity>
                 </View>
@@ -273,13 +252,16 @@ const styles = StyleSheet.create({
     }
 })
 const mapStateToProps = state => ({
-    player  : state.player
+    player  : state.player,
+    listData: state.httpRequest.listDate,
 })
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch:dispatch,
         goBack: ()=>dispatch( NavigationActions.back() ),
-        changePlayerStatus:(status)=>dispatch(playerAtions.changePlayerStatus(status))
+        changePlayerStatus:(status)=>dispatch(playerAtions.changePlayerStatus(status)),
+        updatePlayerData:(data)=>dispatch(playerAtions.updatePlayerData(data)),
+        updatePlayerTrackValue:(value)=>dispatch(playerAtions.updatePlayerTrackValue(value))
     }
 }
 export default connect(mapStateToProps,mapDispatchToProps)(PlayerPage)
