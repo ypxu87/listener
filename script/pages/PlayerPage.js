@@ -186,7 +186,7 @@ class PlayerPage extends Component {
                         {/*歌曲按钮*/}
                         <View style = {{flexDirection:'row',justifyContent:'space-around'}}>
                             <TouchableOpacity onPress={()=>this.changePlageSource("before")}>
-                                <Image source={require('../../images/player/上一首.png')} style={{width:30,height:30}}/>
+                                <Image source={require('../../images/player/previous.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={()=>this.playAction()}>
@@ -194,7 +194,7 @@ class PlayerPage extends Component {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={()=>this.changePlageSource("next")}>
-                                <Image source={require('../../images/player/下一首.png')} style={{width:30,height:30}}/>
+                                <Image source={require('../../images/player/next.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
                         </View>
                     </View>
