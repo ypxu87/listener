@@ -1,24 +1,17 @@
-import {createReducer} from 'redux-action-tools'
 
-let initialState = {
+const initState = {
     downloadList:[]
 };
-export const DownloadReducer = createReducer()
-
-    .when('addDownloadData',state=>state)
-    .done((state, action) => {
-        var { payload, meta } = action;
-        return {
-            ...state,
-            downloadList:payload.data
-        };
-    })
-    .when('updateDownloadList',state=>state)
-    .done((state, action) => {
-        var { payload, meta } = action;
-        return {
-            ...state,
-            downloadList:payload.data
-        };
-    })
-    .build(initialState);
+export default function playerReducer(state = initState, action) {
+    switch(action.type) {
+        case "UPDATE_DOWNLOAD_LIST":
+            state = {
+                ...state,
+                downloadList:action.downloadList
+            }
+            break;
+        default:
+            break;
+    }
+    return state;
+}

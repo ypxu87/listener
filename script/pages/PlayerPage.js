@@ -34,6 +34,7 @@ class PlayerPage extends Component {
         this.state = {
             isplayBtn:require('../../images/player/play.png'),  //播放/暂停按钮背景图
             imgRotate: new Animated.Value(0),
+            trackValue:0
         }
         this.isGoing = false; //为真旋转
         this.myAnimate = Animated.timing(this.state.imgRotate, {

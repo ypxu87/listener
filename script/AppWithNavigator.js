@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { BackHandler,View,DeviceEventEmitter} from 'react-native'
+import { BackHandler,View,DeviceEventEmitter,Platform} from 'react-native'
 import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {addNavigationHelpers, StackNavigator, NavigationActions} from 'react-navigation';
@@ -12,6 +12,7 @@ import RNFS from 'react-native-fs'
 class AppWithNavigatior extends Component {
     constructor(props){
         super(props);
+        this.hasStop=false;
     }
 
     componentDidMount(){
@@ -25,9 +26,6 @@ class AppWithNavigatior extends Component {
             }
             return false;
         })
-
-
-        this.props.getDownloadList();
         this.downloadListener = DeviceEventEmitter.addListener('downloadCommand',function (command) {
             var {downloadList,updateDownloadList} = _self.props
             var index=downloadList.findIndex(function (data,index,arr) {
@@ -39,7 +37,7 @@ class AppWithNavigatior extends Component {
             }else{
                 downloadList[index].status="waiting"
             }
-            updateDownloadList(downloadList,true)
+            updateDownloadList(downloadList)
         })
         this.playerListener = DeviceEventEmitter.addListener('changePlayeTime',function (value) {
             _self.refs.player.seek(value)
@@ -52,84 +50,14 @@ class AppWithNavigatior extends Component {
         this.playerListener.remove()
     }
     checkDownload() {
+        var _self = this;
         var {downloadList,updateDownloadList} = this.props;
         if(downloadList&&downloadList.length>0) {
-            var waitingTasks = []
-            for (var i = 0; i < downloadList.length; i++) {
-                if (downloadList[i].status == 'waiting') {
-                    waitingTasks.push(downloadList[i])
-                }
-            }
-            while(waitingTasks.length){
-                var downloadItem = waitingTasks.shift()
-                const formUrl = downloadItem.audio;
-                var fileSize = 0;
-                if(downloadItem.contentLength){
-                    RNFS.stat(`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`).then((rsp)=>{
-                        const downloadDest = `${RNFS.MainBundlePath}/${downloadItem.title}_temp.mp3`;
-                        const targetDest = `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`;
-                        var range = "bytes="+rsp.size+"-200000000"
-                        options1 = {
-                            fromUrl: formUrl,
-                            toFile: downloadDest,
-                            headers:{
-                                "Range":range
-                            },
-                            background: true,
-                            begin: (res) => {
-                                console.log('begin', res);
-                                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-                                var itemPosition=downloadList.indexOf(function (data) {
-                                    return data._id==downloadItem._id
-                                })
-                                downloadList[itemPosition].status="downloading"
-                                downloadList[itemPosition].progress=0
-                                downloadList[itemPosition].jobId=res.jobId
-                                downloadList[itemPosition].contentLength=res.contentLength
-                                updateDownloadList(downloadList,true);
-                            },
-                            progress: (res) => {
-                                let pro = res.bytesWritten / res.contentLength;
-                                console.log("progress",pro*100)
-                                var itemPosition=downloadList.findIndex(function (value, index, arr) {
-                                    return value._id==downloadItem._id
-                                })
-                                downloadList[itemPosition].progress=pro*100
-                                updateDownloadList(downloadList,false);
-                            },
-
-                        };
-                        try {
-                            const ret = RNFS.downloadFile(options1);
-                            ret.promise.then(res => {
-                                console.log('success', res);
-                                console.log('file://' + downloadDest)
-                                RNFS.read(downloadDest,'base64').then((content)=>{
-                                    RNFS.appendFile(targetDest,content,'base64').then(()=>{
-                                        RNFS.unlink(downloadList)
-                                    })
-                                    RNFS.stat(downloadDest).then((result)=>{
-                                        console.log("fileSize="+result.size," contentLength="+downloadItem.contentLength)
-                                        if(result.size==downloadItem.contentLength){
-                                            var itemPosition=downloadList.findIndex(function (value, index, arr) {
-                                                return value._id==downloadItem._id
-                                            })
-                                            downloadList[itemPosition].status="downloaded"
-                                            updateDownloadList(downloadList,true);
-                                        }
-                                    })
-                                })
-
-                            }).catch(err => {
-                                console.log('err', err);
-                            });
-                        }
-                        catch (error) {
-                            console.log(error);
-                        }
-                    })
-                }else{
-                    const downloadDest = `${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+            for(let i =0;i<downloadList.length;i++){
+                if(downloadList[i].status=="waiting"){
+                    const formUrl = _self.props.downloadList[i].audio;
+                    const downloadDest = '/sdcard/Android/data/com.listener/files/'+_self.props.downloadList[i].title+'.mp3'//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+                    _self.props.downloadList[i].status="downloading"
                     const options = {
                         fromUrl: formUrl,
                         toFile: downloadDest,
@@ -137,42 +65,40 @@ class AppWithNavigatior extends Component {
                         begin: (res) => {
                             console.log('begin', res);
                             console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-                            var itemPosition=downloadList.findIndex(function (value, index, arr) {
-                                return value._id==downloadItem._id
-                            })
-                            downloadList[itemPosition].status="downloading"
-                            downloadList[itemPosition].progress=0
-                            downloadList[itemPosition].jobId=res.jobId
-                            downloadList[itemPosition].contentLength=res.contentLength
-                            updateDownloadList(downloadList,true);
+                            _self.props.downloadList[i].progress=0
+                            _self.props.downloadList[i].jobId=res.jobId
+                            _self.props.downloadList[i].contentLength=_self.props.downloadList[i].contentLength ? _self.props.downloadList[i].contentLength :res.contentLength;
+                            _self.props.updateDownloadList(downloadList);
                         },
                         progress: (res) => {
-                            let pro = res.bytesWritten / res.contentLength;
-                            console.log("progress",pro*100)
-                            var itemPosition=downloadList.findIndex(function (value, index, arr) {
-                                return value._id==downloadItem._id
-                            })
-                            downloadList[itemPosition].progress=pro*100
-                            if(pro>0.3){
+                            let pro = res.bytesWritten / 100000;
+                            if(_self.props.downloadList[i].jobId != res.jobId){
                                 RNFS.stopDownload(res.jobId)
-                                console.log("stopDownload",res.jobId)
-                            }else{
+                            }
+                            var pro_int = parseInt(pro*100)
+                            console.log("progress_"+res.jobId,pro_int+" props:"+_self.props.downloadList[i].progress)
+                            if(pro_int-_self.props.downloadList[i].progress>1){
+                                updateDownloadList(_self.props.downloadList);
+                                _self.props.downloadList[i].progress=pro_int
                             }
                         }
                     };
                     try {
+                        console.log("start download",_self.props.downloadList[i].title)
                         const ret = RNFS.downloadFile(options);
                         ret.promise.then(res => {
                             console.log('success', res);
                             console.log('file://' + downloadDest)
                             RNFS.stat(downloadDest).then((result)=>{
-                                console.log("fileSize="+result.size," contentLength="+downloadItem.contentLength)
-                                if(result.size==downloadItem.contentLength){
-                                    var itemPosition=downloadList.findIndex(function (value, index, arr) {
-                                        return value._id==downloadItem._id
-                                    })
-                                    downloadList[itemPosition].status="downloaded"
-                                    updateDownloadList(downloadList,true);
+                                if(_self.props.downloadList[i].contentLength>result.size){
+                                    _self.props. downloadList[i].status="pause"
+                                    let pro = result.size / _self.props.downloadList[i].contentLength;
+                                    _self.props.downloadList[i].progress=pro*100
+                                    updateDownloadList(_self.props.downloadList);
+                                }else {
+                                    _self.props.downloadList[i].status="downloaded"
+                                    _self.props.downloadList[i].progress=100
+                                    updateDownloadList(_self.props.downloadList);
                                 }
                             })
                         }).catch(err => {
@@ -184,11 +110,71 @@ class AppWithNavigatior extends Component {
                     }
                 }
             }
+            // while(waitingTasks.length){
+            //     var downloadItem = waitingTasks.shift()
+            //     const formUrl = downloadItem.audio;
+            //     const downloadDest = '/sdcard/Android/data/com.listener/files/'+downloadItem.title+'.mp3'//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+            //     const options = {
+            //         fromUrl: formUrl,
+            //         toFile: downloadDest,
+            //         contentLength:downloadItem.downloadItem ? downloadItem.downloadItem:0,
+            //         background: true,
+            //         begin: (res) => {
+            //             console.log('begin', res);
+            //             console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+            //             var itemPosition=downloadList.findIndex(function (value, index, arr) {
+            //                 return value._id==downloadItem._id
+            //             })
+            //             downloadList[itemPosition].status="downloading"
+            //             downloadList[itemPosition].progress=0
+            //             downloadList[itemPosition].jobId=res.jobId
+            //             downloadList[itemPosition].contentLength=downloadList[itemPosition].contentLength ? downloadList[itemPosition].contentLength :res.contentLength;
+            //             updateDownloadList(downloadList);
+            //         },
+            //         progress: (res) => {
+            //             let pro = res.bytesWritten / res.contentLength;
+            //             console.log("progress_"+res.jobId,pro*100)
+            //             DeviceEventEmitter.emit("downloadProgress",{value:pro*100,_id:downloadItem._id})
+            //             // var itemPosition=downloadList.findIndex(function (value, index, arr) {
+            //             //     return value._id==downloadItem._id
+            //             // })
+            //             // downloadList[itemPosition].progress=pro*100
+            //         }
+            //     };
+            //     try {
+            //         const ret = RNFS.downloadFile(options);
+            //         ret.promise.then(res => {
+            //             console.log('success', res);
+            //             console.log('file://' + downloadDest)
+            //             var itemPosition=downloadList.findIndex(function (value, index, arr) {
+            //                 return value._id==downloadItem._id
+            //             })
+            //             RNFS.stat(downloadDest).then((result)=>{
+            //                 if(downloadList[itemPosition].contentLength>result.size){
+            //                     downloadList[itemPosition].status="pause"
+            //                     let pro = result.size / downloadList[itemPosition].contentLength;
+            //                     downloadList[itemPosition].progress=pro*100
+            //                     updateDownloadList(downloadList);
+            //                 }else {
+            //                     downloadList[itemPosition].status="downloaded"
+            //                     downloadList[itemPosition].progress=100
+            //                     updateDownloadList(downloadList);
+            //                 }
+            //             })
+            //         }).catch(err => {
+            //             console.log('err', err);
+            //         });
+            //     }
+            //     catch (error) {
+            //         console.log(error);
+            //     }
+            // }
         }
     }
     playerProgress(data){
         let val = parseInt(data.currentTime)
-        this.props.updatePlayerTrackValue(val)
+        DeviceEventEmitter.emit("playerTrackValue",val)
+        //this.props.updatePlayerTrackValue(val)
     }
     playerOnload(data){
         let time= data.duration
@@ -234,7 +220,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch,
-        getDownloadList:()=>dispatch(getDownloadList()),
         updateDownloadList:(list,saveStorage)=>dispatch(updateDownloadList(list,saveStorage)),
         updatePlayer:(data)=>dispatch(playerAction.updatePlayerData(data)),
         setPlayerDuration:(duration)=>dispatch(playerAction.playerOnload(duration)),

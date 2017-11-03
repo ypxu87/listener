@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import {NavigationActions} from 'react-navigation';
 import {httpRequestAction} from "../actions/HttpRequestAction";
 import * as playerAtion from "../actions/PlayerAction";
-import {addToDownloadList,updateDownloadList} from '../actions/DownloadAction'
+import * as downloadAction from '../actions/DownloadAction'
 
 class DetailPage extends Component {
     static navigationOptions = (arg)=>({
@@ -27,7 +27,7 @@ class DetailPage extends Component {
             data.status="waiting";
             data.progress=0;
             downloadList.push(data);
-            updateDownloadList(downloadList,true)
+            updateDownloadList(downloadList)
         }
     }
     _addToPlayer(data){
@@ -124,7 +124,7 @@ const mapDispatchToProps = (dispatch)=>{
         dispatch:dispatch,
         goBack: ()=>dispatch( NavigationActions.back() ),
         getDetailData:(config)=>dispatch(httpRequestAction('getDetailData',config,{dataName:'detailData'})),
-        updateDownloadList:(downloadList,saveStorage)=>dispatch(updateDownloadList(downloadList,saveStorage)),
+        updateDownloadList:(downloadList)=>dispatch(downloadAction.updateDownloadList(downloadList)),
         updatePlayerData:(data)=>dispatch(playerAtion.updatePlayerData(data)),
         changePlayerStatus:(status)=>dispatch(playerAtion.changePlayerStatus(status))
     }

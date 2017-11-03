@@ -3,7 +3,7 @@ import {View,Image,Text,ScrollView,TouchableOpacity,DeviceEventEmitter} from 're
 import {connect} from 'react-redux';
 import { Progress, Button} from 'antd-mobile';
 import RNFS from 'react-native-fs';
-import {addToDownloadList,updateDownloadList} from '../actions/DownloadAction'
+import * as downloadAction from '../actions/DownloadAction'
 class DownloadPage extends Component {
     static navigationOptions = (arg)=>({
         title: '下载',
@@ -16,11 +16,29 @@ class DownloadPage extends Component {
     constructor(props){
         super(props)
         this.state={
-            curIndex:'downloaded'
+            curIndex:'downloaded',
+            downloadList:this.props.downloadList
         }
     }
     componentDidMount(){
-
+        var _self = this;
+        this.downloadProgressListener = DeviceEventEmitter.addListener("downloadProgress",function (data) {
+               console.log("get download msg",data)
+                _self.state.downloadList=data;
+                _self.setState({
+                    downloadList:data
+                })
+            // try{
+            //     var test = eval("_self.refs."+data._id)
+            //     console.log("test",test)
+            //     test.percent=parseInt(data.value)
+            // }catch(err){
+            //
+            // }
+        })
+    }
+    componentWillUnmount(){
+        this.downloadProgressListener.remove()
     }
     _selectTab(tabName){
         this.setState({
@@ -55,6 +73,7 @@ class DownloadPage extends Component {
                 list.push(downloadList[i])
             }
         }
+        console.log("show list "+this.state.curIndex,list)
         var listView = list.map(function (item,index) {
             if(_self.state.curIndex=="downloaded"){
                 return (
@@ -73,7 +92,7 @@ class DownloadPage extends Component {
                         <View style={{justifyContent:'space-around'}}>
                             <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
                             <View style={{height:5,width:200}}>
-                                <Progress percent={item.progress ? item.progress:0} position="normal" />
+                                <Progress ref={item._id} percent={item.progress ? item.progress:0} position="normal" />
                             </View>
                         </View>
                         <TouchableOpacity onPress={()=>_self._changeState(item)} style={{marginLeft:30, margin:30}}>
@@ -118,7 +137,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch,
-        updateDownloadList:(downloadList,saveStorage)=>dispatch(updateDownloadList(downloadList,saveStorage))
+        updateDownloadList:(downloadList)=>dispatch(downloadAction.updateDownloadList(downloadList))
     }
 }
 

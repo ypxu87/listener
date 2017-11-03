@@ -70,7 +70,7 @@ class HomePage extends Component {
         return (
             listData ? (
                 <View style={{width:'100%',height:'100%'}}>
-                    <ScrollView >
+                    <ScrollView>
                         <Carousel
                             autoplay={true}
                             infinite
@@ -79,7 +79,7 @@ class HomePage extends Component {
                             {
                                 recommendList.map(function (item,index) {
                                         return (
-                                            <TouchableOpacity key={index} onPress={() => _self._gotoDetailPage(item)}>
+                                            <TouchableOpacity activeOpacity={0.8} key={index} onPress={() => _self._gotoDetailPage(item)}>
                                                 <Image
                                                     source={{uri: item.photo}}
                                                     style={{width: '100%', height: 200}}
@@ -96,7 +96,7 @@ class HomePage extends Component {
                         {
                             hotspotList.map(function (item,index) {
                                     return (
-                                        <TouchableOpacity key={item._id} onPress={()=>_self._gotoDetailPage(item)}>
+                                        <TouchableOpacity activeOpacity={0.8} key={item._id} onPress={()=>_self._gotoDetailPage(item)}>
                                             <View style={styles.itemStyle}>
                                                 <Image source={{uri:item.thumbnail}} style={styles.imageStyle}/>
                                                 <View style={styles.subItemStyle}>
@@ -109,7 +109,7 @@ class HomePage extends Component {
                             })
                         }
                     </ScrollView>
-                    <TouchableOpacity style={{position:'absolute',width:'100%',bottom:_self.props.player.data ? 0:-50}} onPress={()=>_self._gotoPlayerPage()}>
+                    <TouchableOpacity activeOpacity={0.8} style={{position:'absolute',width:'100%',bottom:_self.props.player.data ? 0:-50}} onPress={()=>_self._gotoPlayerPage()}>
                         <View style={{width:"100%",height:50,backgroundColor:"#d9ddea",flexDirection:'row'}}>
                                 <Image source={{uri:this.props.player.data.thumbnail}} style={{width:35,height:35,borderRadius:3,marginTop:7,marginLeft:15}}/>
                             <View style={{justifyContent:"center"}}>
