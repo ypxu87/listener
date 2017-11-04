@@ -49,9 +49,9 @@ class AppWithNavigatior extends Component {
         this.downloadListener.remove()
         this.playerListener.remove()
     }
-    checkDownload() {
+    checkDownload(downloadList) {
         var _self = this;
-        var {downloadList,updateDownloadList} = this.props;
+        var {updateDownloadList} = this.props;
         if(downloadList&&downloadList.length>0) {
             for(let i =0;i<downloadList.length;i++) {
                 if (downloadList[i].status == "waiting") {
@@ -236,8 +236,8 @@ class AppWithNavigatior extends Component {
     }
     playerProgress(data){
         let val = parseInt(data.currentTime)
-        DeviceEventEmitter.emit("playerTrackValue",val)
-        //this.props.updatePlayerTrackValue(val)
+        //DeviceEventEmitter.emit("playerTrackValue",val)
+        this.props.updatePlayerTrackValue(val)
     }
     playerOnload(data){
         let time= data.duration
@@ -246,7 +246,7 @@ class AppWithNavigatior extends Component {
     }
     render() {
         var _self=this
-        this.checkDownload();
+        this.checkDownload(this.props.downloadList);
         const {dispatch, nav} = this.props;
         var playerView = this.props.player.data ? (
             <Video
@@ -261,6 +261,7 @@ class AppWithNavigatior extends Component {
         ):(<View/>)
         return (
             <View style={{width:'100%',height:'100%'}}>
+                <View style={{width:0,height:0}}/>
                 {playerView}
                 <Router navigation={addNavigationHelpers({dispatch: dispatch, state: nav})}/>
             </View>

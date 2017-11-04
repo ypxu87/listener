@@ -19,7 +19,7 @@ class DetailPage extends Component {
         this.props.getDetailData({_id:this.info._id})
     }
     _updateDownloadList(data){
-        var {downloadList,updateDownloadList} = this.props
+        var {downloadList} = this.props
         var index = downloadList.findIndex(function (value,index,arr) {
             return value._id==data._id
         })
@@ -27,7 +27,7 @@ class DetailPage extends Component {
             data.status="waiting";
             data.progress=0;
             downloadList.push(data);
-            updateDownloadList(downloadList)
+            this.props.updateDownloadList(downloadList)
         }
     }
     _addToPlayer(data){
