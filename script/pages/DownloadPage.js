@@ -17,55 +17,30 @@ class DownloadPage extends Component {
         super(props)
         this.state={
             curIndex:'downloaded',
-            downloadList:this.props.downloadList
         }
     }
     componentDidMount(){
-        var _self = this;
-        this.downloadProgressListener = DeviceEventEmitter.addListener("downloadProgress",function (data) {
-               console.log("get download msg",data)
-                _self.state.downloadList=data;
-                _self.setState({
-                    downloadList:data
-                })
-            // try{
-            //     var test = eval("_self.refs."+data._id)
-            //     console.log("test",test)
-            //     test.percent=parseInt(data.value)
-            // }catch(err){
-            //
-            // }
-        })
     }
     componentWillUnmount(){
-        this.downloadProgressListener.remove()
     }
     _selectTab(tabName){
         this.setState({
             curIndex:tabName
         })
     }
-    _changeState(data){
-        var command = null
-        if(data.status=="downloading"||data.status=="waiting"){
-            command = {
-                _id:data._id,
-                jobId:data.jobId,
-                status:"pause"
-            }
-        }else{
-            command = {
-                _id:data._id,
-                jobId:data.jobId,
-                status:"waiting"
-            }
+    _changeState(data,index){
+        var command = {
+            _id: data._id,
+            jobId: data.jobId,
+            status: data.status == "downloading" || data.status == "waiting" ? "pause" : "waiting",
+            index: index
         }
         DeviceEventEmitter.emit("downloadCommand",command)
     }
     render() {
         var _self=this
         var list=[];
-        var {downloadList} = this.props;
+        var {downloadList} = this.props.downloader;
         for(var i=0;i<downloadList.length;i++){
             if(this.state.curIndex=='downloaded'&&downloadList[i].status=='downloaded'){
                 list.push(downloadList[i])
@@ -95,7 +70,7 @@ class DownloadPage extends Component {
                                 <Progress ref={item._id} percent={item.progress ? item.progress:0} position="normal" />
                             </View>
                         </View>
-                        <TouchableOpacity onPress={()=>_self._changeState(item)} style={{marginLeft:30, margin:30}}>
+                        <TouchableOpacity onPress={()=>_self._changeState(item,index)} style={{marginLeft:30, margin:30}}>
                             <Image source={item.status=="downloading"||item.status=="waiting"?require("../../images/pause.png"):
                                 require("../../images/download.png")} style={{width:30, height:30}}/>
                         </TouchableOpacity>
@@ -132,7 +107,7 @@ class DownloadPage extends Component {
     }
 }
 const mapStateToProps = state => ({
-    downloadList : state.download.downloadList
+    downloader : state.downloader
 });
 const mapDispatchToProps = (dispatch)=>{
     return {

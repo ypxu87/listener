@@ -11,7 +11,7 @@ const RootReducer = combineReducers({
     catchReject : catchRejectReducer,
     appState    : appStateReducer,
     httpRequest : httpRequestReducer,
-    download    : DownloadReducer,
+    downloader    : DownloadReducer,
     player      : PlayerRuducer
 });
 

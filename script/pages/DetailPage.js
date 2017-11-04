@@ -19,7 +19,7 @@ class DetailPage extends Component {
         this.props.getDetailData({_id:this.info._id})
     }
     _updateDownloadList(data){
-        var {downloadList} = this.props
+        var {downloadList,flag} = this.props.downloader
         var index = downloadList.findIndex(function (value,index,arr) {
             return value._id==data._id
         })
@@ -27,7 +27,7 @@ class DetailPage extends Component {
             data.status="waiting";
             data.progress=0;
             downloadList.push(data);
-            this.props.updateDownloadList(downloadList)
+            this.props.updateDownloadList(downloadList,!flag)
         }
     }
     _addToPlayer(data){
@@ -38,6 +38,7 @@ class DetailPage extends Component {
             this.props.changePlayerStatus(!this.props.player.status)
         }
     }
+
     render() {
         var {detailData} = this.props
         var playStatusBtn = <View/>
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
 });
 const mapStateToProps = state => ({
     detailData  : state.httpRequest.detailData,
-    downloadList : state.download.downloadList,
+    downloader : state.downloader,
     curPlayData  : state.player.data,
     player  : state.player
 })

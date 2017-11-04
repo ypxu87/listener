@@ -97,6 +97,7 @@ class PlayerPage extends Component {
                 index = this.props.listData.length-1;
             }
         }
+        DeviceEventEmitter.emit("changePlayeTime",0)
         this.props.updatePlayerTrackValue(0)
         this.props.updatePlayerData(this.props.listData[index])
 
@@ -158,10 +159,8 @@ class PlayerPage extends Component {
 
                     <View style = {{position:'absolute',width: width,flexDirection:'column'}}>
                         <Text style={{fontSize:24,width:'100%',textAlign:'center',marginTop:50}}>{curData.title}</Text>
-                        <Image source={require('../../images/player/blackRing.png')} style={{width:220,height:220,marginTop:30,alignSelf:'center'}}/>
-                        <Animated.Image
-                            ref = 'myAnimate'
-                            style={{width:140,height:140,marginTop: -180,alignSelf:'center',borderRadius: 140*0.5,transform: [{rotate:spin}]}}
+                        <Image
+                            style={{width:180,height:180,marginTop: 40,alignSelf:'center',borderRadius: 7}}
                             source={{uri: curData.thumbnail}}
                         />
                         <View style={styles.playingInfo}>
@@ -191,7 +190,7 @@ class PlayerPage extends Component {
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={()=>this.playAction()}>
-                                <Image source={this.state.isplayBtn} style={{width:30,height:30}}/>
+                                <Image source={this.props.player.status ? require('../../images/player/stop.png'):require('../../images/player/play.png')} style={{width:30,height:30}}/>
                             </TouchableOpacity>
 
                             <TouchableOpacity onPress={()=>this.changePlageSource("next")}>
