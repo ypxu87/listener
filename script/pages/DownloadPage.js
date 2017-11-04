@@ -83,14 +83,14 @@ class DownloadPage extends Component {
                 <View style={{backgroundColor:'#5a85d4',height:70,alignItems:'center'}}>
                     <View style={{flexDirection:'row',height:30,width:150,borderRadius:5,borderColor:'white',
                         marginTop:30,borderWidth:2}}>
-                        <TouchableOpacity style={{flex:1}} onPress={() => _self._selectTab("downloaded")}>
+                        <TouchableOpacity activeOpacity={0.8} style={{flex:1}} onPress={() => _self._selectTab("downloaded")}>
                             <View style={{height:28,alignItems:'center',justifyContent:'center',
                                 backgroundColor:_self.state.curIndex=='downloaded' ?'white':'transparent'}}>
                                 <Text style={{alignItems:'center',fontSize:20,
                                     color:_self.state.curIndex=='downloaded' ?'#5a85d4':'white'}}>已下载</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{flex:1}}  onPress={() => _self._selectTab("downloading")}>
+                        <TouchableOpacity activeOpacity={0.8} style={{flex:1}}  onPress={() => _self._selectTab("downloading")}>
                             <View style={{height:28,flex:1,alignItems:'center',justifyContent:'center',
                                 backgroundColor:_self.state.curIndex=='downloading' ?'white':'transparent'}}>
                                 <Text style={{alignItems:'center',fontSize:20,

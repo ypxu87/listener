@@ -109,7 +109,7 @@ class HomePage extends Component {
                             })
                         }
                     </ScrollView>
-                    <TouchableOpacity activeOpacity={0.8} style={{position:'absolute',width:'100%',bottom:_self.props.player.data ? 0:-50}} onPress={()=>_self._gotoPlayerPage()}>
+                    <TouchableOpacity activeOpacity={0.9} style={{position:'absolute',width:'100%',bottom:_self.props.player.data ? 0:-50}} onPress={()=>_self._gotoPlayerPage()}>
                         <View style={{width:"100%",height:50,backgroundColor:"#d9ddea",flexDirection:'row'}}>
                                 <Image source={{uri:this.props.player.data.thumbnail}} style={{width:35,height:35,borderRadius:3,marginTop:7,marginLeft:15}}/>
                             <View style={{justifyContent:"center"}}>
