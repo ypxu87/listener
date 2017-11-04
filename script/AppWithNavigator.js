@@ -53,61 +53,122 @@ class AppWithNavigatior extends Component {
         var _self = this;
         var {downloadList,updateDownloadList} = this.props;
         if(downloadList&&downloadList.length>0) {
-            for(let i =0;i<downloadList.length;i++){
-                if(downloadList[i].status=="waiting"){
-                    RNFS.stat(`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`).then((result)=>{
-                        const formUrl = _self.props.downloadList[i].audio;
-                        const downloadDest = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i].title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
-                        _self.props.downloadList[i].status="downloading"
-                        const options = {
-                            fromUrl: formUrl,
-                            toFile: downloadDest,
-                            startPoint:result.size,
-                            endPoint:self.props.downloadList[i].contentLength,
-                            background: true,
-                            begin: (res) => {
-                                console.log('begin', res);
-                                console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
-                                _self.props.downloadList[i].progress=0
-                                _self.props.downloadList[i].jobId=res.jobId
-                                _self.props.downloadList[i].contentLength=_self.props.downloadList[i].contentLength ? _self.props.downloadList[i].contentLength :res.contentLength;
-                                _self.props.updateDownloadList(downloadList);
-                            },
-                            progress: (res) => {
-                                let pro = res.bytesWritten / 100000;
-                                if(_self.props.downloadList[i].jobId != res.jobId){
-                                    RNFS.stopDownload(res.jobId)
-                                }
-                                var pro_int = parseInt(pro*100)
-                                console.log("progress_"+res.jobId,pro_int+" props:"+_self.props.downloadList[i].progress)
-                                updateDownloadList(_self.props.downloadList);
-                                _self.props.downloadList[i].progress=pro_int
-                            }
-                        };
-                        try {
-                            console.log("start download",_self.props.downloadList[i].title)
-                            const ret = RNFS.downloadFile(options);
-                            ret.promise.then(res => {
-                                console.log('success', res);
-                                console.log('file://' + downloadDest)
-                                RNFS.stat(downloadDest).then((result)=>{
-                                    if(_self.props.downloadList[i].contentLength>result.size){
-                                        _self.props. downloadList[i].status="pause"
-                                        let pro = result.size / _self.props.downloadList[i].contentLength;
-                                        _self.props.downloadList[i].progress=pro*100
+            for(let i =0;i<downloadList.length;i++) {
+                if (downloadList[i].status == "waiting") {
+                    RNFS.exists(`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`).then(isExist=>{
+                        if (isExist) {
+                            RNFS.stat(`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`).then((result) => {
+                                const formUrl = _self.props.downloadList[i].audio;
+                                const downloadDest = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i].title}.mp3` : `${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+                                _self.props.downloadList[i].status = "downloading"
+                                const options = {
+                                    fromUrl: formUrl,
+                                    headers:{
+                                      Range:"bytes="+result.size+"-"+_self.props.downloadList[i].contentLength
+                                    },
+                                    toFile: downloadDest,
+                                    startPoint: result.size,
+                                    endPoint: _self.props.downloadList[i].contentLength,
+                                    background: true,
+                                    begin: (res) => {
+                                        console.log('begin', res);
+                                        console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+                                        _self.props.downloadList[i].progress = 0
+                                        _self.props.downloadList[i].jobId = res.jobId
+                                        _self.props.downloadList[i].contentLength = _self.props.downloadList[i].contentLength ? _self.props.downloadList[i].contentLength : res.contentLength;
+                                        _self.props.updateDownloadList(downloadList);
+                                    },
+                                    progress: (res) => {
+                                        let pro = res.bytesWritten / 100000;
+                                        if (_self.props.downloadList[i].jobId != res.jobId) {
+                                            RNFS.stopDownload(res.jobId)
+                                        }
+                                        var pro_int = parseInt(pro * 100)
+                                        console.log("progress_" + res.jobId, pro_int + " props:" + _self.props.downloadList[i].progress)
                                         updateDownloadList(_self.props.downloadList);
-                                    }else {
-                                        _self.props.downloadList[i].status="downloaded"
-                                        _self.props.downloadList[i].progress=100
-                                        updateDownloadList(_self.props.downloadList);
+                                        _self.props.downloadList[i].progress = pro_int
                                     }
-                                })
-                            }).catch(err => {
-                                console.log('err', err);
-                            });
-                        }
-                        catch (error) {
-                            console.log(error);
+                                };
+                                try {
+                                    console.log("start download", _self.props.downloadList[i].title)
+                                    const ret = RNFS.downloadFile(options);
+                                    ret.promise.then(res => {
+                                        console.log('success', res);
+                                        console.log('file://' + downloadDest)
+                                        RNFS.stat(downloadDest).then((result) => {
+                                            if (_self.props.downloadList[i].contentLength > result.size) {
+                                                _self.props.downloadList[i].status = "pause"
+                                                let pro = result.size / _self.props.downloadList[i].contentLength;
+                                                _self.props.downloadList[i].progress = pro * 100
+                                                updateDownloadList(_self.props.downloadList);
+                                            } else {
+                                                _self.props.downloadList[i].status = "downloaded"
+                                                _self.props.downloadList[i].progress = 100
+                                                updateDownloadList(_self.props.downloadList);
+                                            }
+                                        })
+                                    }).catch(err => {
+                                        console.log('err', err);
+                                    });
+                                }
+                                catch (error) {
+                                    console.log(error);
+                                }
+                            })
+                        } else {
+                            const formUrl = _self.props.downloadList[i].audio;
+                            const downloadDest = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i].title}.mp3` : `${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+                            _self.props.downloadList[i].status = "downloading"
+                            const options = {
+                                fromUrl: formUrl,
+                                toFile: downloadDest,
+                                startPoint: 0,
+                                endPoint: 0,
+                                background: true,
+                                begin: (res) => {
+                                    console.log('begin', res);
+                                    console.log('contentLength:', res.contentLength / 1024 / 1024, 'M');
+                                    _self.props.downloadList[i].progress = 0
+                                    _self.props.downloadList[i].jobId = res.jobId
+                                    _self.props.downloadList[i].contentLength = _self.props.downloadList[i].contentLength ? _self.props.downloadList[i].contentLength : res.contentLength;
+                                    _self.props.updateDownloadList(downloadList);
+                                },
+                                progress: (res) => {
+                                    let pro = res.bytesWritten / 100000;
+                                    if (_self.props.downloadList[i].jobId != res.jobId) {
+                                        RNFS.stopDownload(res.jobId)
+                                    }
+                                    var pro_int = parseInt(pro * 100)
+                                    console.log("progress_" + res.jobId, pro_int + " props:" + _self.props.downloadList[i].progress)
+                                    updateDownloadList(_self.props.downloadList);
+                                    _self.props.downloadList[i].progress = pro_int
+                                }
+                            };
+                            try {
+                                console.log("start download", _self.props.downloadList[i].title)
+                                const ret = RNFS.downloadFile(options);
+                                ret.promise.then(res => {
+                                    console.log('success', res);
+                                    console.log('file://' + downloadDest)
+                                    RNFS.stat(downloadDest).then((result) => {
+                                        if (_self.props.downloadList[i].contentLength > result.size) {
+                                            _self.props.downloadList[i].status = "pause"
+                                            let pro = result.size / _self.props.downloadList[i].contentLength;
+                                            _self.props.downloadList[i].progress = pro * 100
+                                            updateDownloadList(_self.props.downloadList);
+                                        } else {
+                                            _self.props.downloadList[i].status = "downloaded"
+                                            _self.props.downloadList[i].progress = 100
+                                            updateDownloadList(_self.props.downloadList);
+                                        }
+                                    })
+                                }).catch(err => {
+                                    console.log('err', err);
+                                });
+                            }
+                            catch (error) {
+                                console.log(error);
+                            }
                         }
                     })
                 }
