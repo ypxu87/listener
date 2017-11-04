@@ -49,4 +49,10 @@
   return YES;
 }
 
+- (void)applicationDidEnterBackground:(UIApplication *)application {
+  
+  //允许后台播放音乐
+  [application beginBackgroundTaskWithExpirationHandler:nil];
+  
+}
 @end
