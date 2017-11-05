@@ -20,6 +20,11 @@ class AppWithNavigatior extends Component {
         AsyncStorage.getItem("downloadList").then((list)=>{
             let downloadList = JSON.parse(list)
             if(downloadList){
+                for(var i=0;i<downloadList.length;i++){
+                    if(downloadList[i].status!="downloaded"){
+                        downloadList[i].status = "pause"
+                    }
+                }
                 _self.props.updateDownloadList(downloadList)
             }
         })
@@ -80,6 +85,7 @@ class AppWithNavigatior extends Component {
                                         _self.props.downloader.downloadList[i].jobId = res.jobId
                                         _self.props.downloader.downloadList[i].contentLength = _self.props.downloader.downloadList[i].contentLength ? _self.props.downloader.downloadList[i].contentLength : res.contentLength;
                                         _self.props.updateDownloadList(downloadList);
+                                        AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
 
                                     },
                                     progress: (res) => {
@@ -96,18 +102,10 @@ class AppWithNavigatior extends Component {
                                     ret.promise.then(res => {
                                         console.log('success', res);
                                         console.log('file://' + downloadDest)
-                                        RNFS.stat(downloadDest).then((result) => {
-                                            if (_self.props.downloader.downloadList[i].contentLength > result.size) {
-                                                _self.props.downloader.downloadList[i].status = "pause"
-                                                let pro = result.size / _self.props.downloader.downloadList[i].contentLength;
-                                                _self.props.downloader.downloadList[i].progress = pro * 100
-                                                updateDownloadList(_self.props.downloader.downloadList);
-                                            } else {
-                                                _self.props.downloader.downloadList[i].status = "downloaded"
-                                                _self.props.downloader.downloadList[i].progress = 100
-                                                updateDownloadList(_self.props.downloader.downloadList);
-                                            }
-                                        })
+                                        _self.props.downloader.downloadList[i].status = "downloaded"
+                                        _self.props.downloader.downloadList[i].progress = 100
+                                        updateDownloadList(_self.props.downloader.downloadList);
+                                        AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
                                     }).catch(err => {
                                         console.log('err', err);
                                     });
@@ -131,6 +129,7 @@ class AppWithNavigatior extends Component {
                                     _self.props.downloader.downloadList[i].jobId = res.jobId
                                     _self.props.downloader.downloadList[i].contentLength = _self.props.downloader.downloadList[i].contentLength ? _self.props.downloader.downloadList[i].contentLength : res.contentLength;
                                     _self.props.updateDownloadList(downloadList);
+                                    AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
                                 },
                                 progress: (res) => {
                                     let pro = res.bytesWritten / _self.props.downloader.downloadList[i].contentLength;
@@ -146,12 +145,11 @@ class AppWithNavigatior extends Component {
                                 ret.promise.then(res => {
                                     console.log('success', res);
                                     console.log('file://' + downloadDest)
-                                    RNFS.stat(downloadDest).then((result) => {
-                                            _self.props.downloader.downloadList[i].status = "downloaded"
-                                            _self.props.downloader.downloadList[i].progress = 100
-                                            _self.props.downloader.downloadList[i].audio=downloadDest
-                                            updateDownloadList(_self.props.downloader.downloadList);
-                                    })
+                                    _self.props.downloader.downloadList[i].status = "downloaded"
+                                    _self.props.downloader.downloadList[i].progress = 100
+                                    _self.props.downloader.downloadList[i].audio=downloadDest
+                                    updateDownloadList(_self.props.downloader.downloadList);
+                                    AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
                                 }).catch(err => {
                                     console.log('err', err);
                                 });
