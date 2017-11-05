@@ -147,16 +147,10 @@ class AppWithNavigatior extends Component {
                                     console.log('success', res);
                                     console.log('file://' + downloadDest)
                                     RNFS.stat(downloadDest).then((result) => {
-                                        if (_self.props.downloader.downloadList[i].contentLength > result.size) {
-                                            _self.props.downloader.downloadList[i].status = "pause"
-                                            let pro = result.size / _self.props.downloader.downloadList[i].contentLength;
-                                            _self.props.downloader.downloadList[i].progress = pro * 100
-                                            updateDownloadList(_self.props.downloadList);
-                                        } else {
                                             _self.props.downloader.downloadList[i].status = "downloaded"
                                             _self.props.downloader.downloadList[i].progress = 100
+                                            _self.props.downloader.downloadList[i].audio=downloadDest
                                             updateDownloadList(_self.props.downloader.downloadList);
-                                        }
                                     })
                                 }).catch(err => {
                                     console.log('err', err);
@@ -185,9 +179,10 @@ class AppWithNavigatior extends Component {
         var _self=this
         this.checkDownload(this.props.downloader.downloadList);
         const {dispatch, nav} = this.props;
-        var playerView = this.props.player.data ? (
+        const {data} = this.props.player
+        var playerView = data ? (
             <Video
-                source={{uri: _self.props.player.data.audio}}
+                source={{uri: data.audio}}
                 ref='player'
                 volume={1.0}
                 paused={ _self.props.player.status}

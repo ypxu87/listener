@@ -3,6 +3,7 @@ import {View,Image,Text,ScrollView,TouchableOpacity,DeviceEventEmitter} from 're
 import {connect} from 'react-redux';
 import { Progress, Button} from 'antd-mobile';
 import RNFS from 'react-native-fs';
+import * as playerAtion from "../actions/PlayerAction";
 import * as downloadAction from '../actions/DownloadAction'
 class DownloadPage extends Component {
     static navigationOptions = (arg)=>({
@@ -37,6 +38,12 @@ class DownloadPage extends Component {
         }
         DeviceEventEmitter.emit("downloadCommand",command)
     }
+    _addToPlayer(data){
+        if(this.props.curPlayData._id!=data._id){
+            this.props.updatePlayerData(data)
+            this.props.changePlayerStatus(false)
+        }
+    }
     render() {
         var _self=this
         var list=[];
@@ -52,13 +59,15 @@ class DownloadPage extends Component {
         var listView = list.map(function (item,index) {
             if(_self.state.curIndex=="downloaded"){
                 return (
-                    <View key={item._id} style={{flexDirection:'row', backgroundColor:'white', width:'96%', marginLeft:'2%', marginRight:'2%', borderRadius:3, marginTop:5}}>
-                        <Image source={{uri:item.thumbnail}} style={{width:60, height:60, marginLeft:10, margin:10}}/>
-                        <View style={{justifyContent:'space-around'}}>
-                            <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
-                            <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                    <TouchableOpacity onPress={()=>_self._addToPlayer(item)} style={{width:'100%', marginTop:5}}>
+                        <View key={item._id} style={{flexDirection:'row', backgroundColor:'white', width:'96%', marginLeft:'2%', marginRight:'2%', borderRadius:3}}>
+                            <Image source={{uri:item.thumbnail}} style={{width:60, height:60, marginLeft:10, margin:10}}/>
+                            <View style={{justifyContent:'space-around'}}>
+                                <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
+                                <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                            </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 )
             }else{
                 return(
@@ -107,12 +116,15 @@ class DownloadPage extends Component {
     }
 }
 const mapStateToProps = state => ({
-    downloader : state.downloader
+    downloader : state.downloader,
+    curPlayData  : state.player.data,
 });
 const mapDispatchToProps = (dispatch)=>{
     return {
         dispatch,
-        updateDownloadList:(downloadList)=>dispatch(downloadAction.updateDownloadList(downloadList))
+        updatePlayerData:(data)=>dispatch(playerAtion.updatePlayerData(data)),
+        updateDownloadList:(downloadList)=>dispatch(downloadAction.updateDownloadList(downloadList)),
+        changePlayerStatus:(status)=>dispatch(playerAtion.changePlayerStatus(status))
     }
 }
 
