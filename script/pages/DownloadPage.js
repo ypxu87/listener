@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View,Image,Text,ScrollView,TouchableOpacity,DeviceEventEmitter} from 'react-native';
+import {View,Image,Text,ScrollView,TouchableOpacity,DeviceEventEmitter,AsyncStorage} from 'react-native';
 import {connect} from 'react-redux';
 import { Progress, Button} from 'antd-mobile';
 import RNFS from 'react-native-fs';
@@ -29,11 +29,28 @@ class DownloadPage extends Component {
             curIndex:tabName
         })
     }
-    _changeState(data,index){
+    _changeState(data){
+        var {downloadList} = this.props.downloader
+        var index = downloadList.findIndex(function (item,index,err) {
+            return item._id == data._id
+        })
         var command = {
             _id: data._id,
             jobId: data.jobId,
             status: data.status == "downloading" || data.status == "waiting" ? "pause" : "waiting",
+            index: index
+        }
+        DeviceEventEmitter.emit("downloadCommand",command)
+    }
+    _delectItem(data){
+        var {downloadList} = this.props.downloader
+        var index = downloadList.findIndex(function (item,index,err) {
+            return item._id == data._id
+        })
+        var command = {
+            _id: data._id,
+            jobId: data.jobId,
+            status: "delete",
             index: index
         }
         DeviceEventEmitter.emit("downloadCommand",command)
@@ -56,7 +73,7 @@ class DownloadPage extends Component {
             }
         }
         console.log("show list "+this.state.curIndex,list)
-        var listView = list.map(function (item,index) {
+        var listView = list.map(function (item) {
             if(_self.state.curIndex=="downloaded"){
                 return (
                     <TouchableOpacity key={item._id} onPress={()=>_self._addToPlayer(item)} style={{width:'100%', marginTop:5}}>
@@ -66,6 +83,10 @@ class DownloadPage extends Component {
                                 <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
                                 <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
                             </View>
+                            <TouchableOpacity onPress={()=>_self._delectItem(item)} style={{marginLeft:30, margin:30}}>
+                                <Image source={item.status=="downloading"||item.status=="waiting"?require("../../images/delete.png"):
+                                    require("../../images/download.png")} style={{width:30, height:30}}/>
+                            </TouchableOpacity>
                         </View>
                     </TouchableOpacity>
                 )
@@ -79,7 +100,7 @@ class DownloadPage extends Component {
                                 <Progress ref={item._id} percent={item.progress ? item.progress:0} position="normal" />
                             </View>
                         </View>
-                        <TouchableOpacity onPress={()=>_self._changeState(item,index)} style={{marginLeft:30, margin:30}}>
+                        <TouchableOpacity onPress={()=>_self._changeState(item)} style={{marginLeft:30, margin:30}}>
                             <Image source={item.status=="downloading"||item.status=="waiting"?require("../../images/pause.png"):
                                 require("../../images/download.png")} style={{width:30, height:30}}/>
                         </TouchableOpacity>

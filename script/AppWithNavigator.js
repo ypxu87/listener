@@ -40,9 +40,14 @@ class AppWithNavigatior extends Component {
         this.downloadListener = DeviceEventEmitter.addListener('downloadCommand',function (command) {
             var {updateDownloadList} = _self.props
             var {downloadList} =_self.props.downloader
-            if(command.status=="pause"){
+            if(command.status=="pause") {
                 RNFS.stopDownload(command.jobId)
-                downloadList[command.index].status="pause"
+                downloadList[command.index].status = "pause"
+            }else if(command.status=="delete"){
+                RNFS.unlink(downloadList[command.index].audio)
+                downloadList.splice(command.index,1);
+                AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
+                this.props.updateDownloadList(downloadList)
             }else{
                 downloadList[command.index].status="waiting"
             }

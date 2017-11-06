@@ -16,27 +16,6 @@ class HomePage extends Component {
     })
     constructor(props){
         super(props)
-        this.state = {
-            data: ['AiyWuByWklrrUDlFignR', 'TekJlZRVCjLFexlOCuWn', 'IJOtIlfsYdTyaDTRVrLI'],
-            dataSource:[
-                {
-                    img:'../../images/1.jpg',
-                    title:"test"
-                },
-                {
-                    img:'../../images/2.jpg',
-                    title:"test"
-                },
-                {
-                    img:'../../images/3.jpg',
-                    title:"test"
-                },
-                {
-                    img:'../../images/4.jpg',
-                    title:"test"
-                }
-            ]
-        }
     }
     _gotoDetailPage = (data)=>{
         this.props.navigation.navigate('DetailPage',data)
