@@ -65,11 +65,12 @@ class AppWithNavigatior extends Component {
             for(let i =0;i<downloadList.length;i++) {
                 if (downloadList[i].status == "waiting") {
                     _self.props.downloader.downloadList[i].status = "downloading"
-                    RNFS.exists(`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`).then(isExist=>{
+                    var downloadFile = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i]._id}.mp3` : `${RNFS.ExternalDirectoryPath}/${downloadList[i]._id}.mp3`;
+                    RNFS.exists(downloadFile).then(isExist=>{
                         if (isExist) {
-                            RNFS.stat(`${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`).then((result) => {
+                            RNFS.stat(downloadFile).then((result) => {
                                 const formUrl = _self.props.downloader.downloadList[i].audio;
-                                const downloadDest = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i].title}.mp3` : `${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+                                const downloadDest = downloadFile;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
                                 const options = {
                                     fromUrl: formUrl,
                                     headers:{
@@ -116,7 +117,7 @@ class AppWithNavigatior extends Component {
                             })
                         } else {
                             const formUrl = _self.props.downloader.downloadList[i].audio;
-                            const downloadDest = Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadList[i].title}.mp3` : `${RNFS.ExternalDirectoryPath}/${downloadList[i].title}.mp3`;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
+                            const downloadDest = downloadFile;//Platform.OS == 'ios' ? `${RNFS.MainBundlePath}/${downloadItem.title}.mp3`:`${RNFS.ExternalDirectoryPath}/${downloadItem.title}.mp3`;  //ExternalDirectoryPath //MainBundlePath
                             const options = {
                                 fromUrl: formUrl,
                                 toFile: downloadDest,

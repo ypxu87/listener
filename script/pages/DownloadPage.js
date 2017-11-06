@@ -59,7 +59,7 @@ class DownloadPage extends Component {
         var listView = list.map(function (item,index) {
             if(_self.state.curIndex=="downloaded"){
                 return (
-                    <TouchableOpacity onPress={()=>_self._addToPlayer(item)} style={{width:'100%', marginTop:5}}>
+                    <TouchableOpacity key={item._id} onPress={()=>_self._addToPlayer(item)} style={{width:'100%', marginTop:5}}>
                         <View key={item._id} style={{flexDirection:'row', backgroundColor:'white', width:'96%', marginLeft:'2%', marginRight:'2%', borderRadius:3}}>
                             <Image source={{uri:item.thumbnail}} style={{width:60, height:60, marginLeft:10, margin:10}}/>
                             <View style={{justifyContent:'space-around'}}>
