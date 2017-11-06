@@ -47,7 +47,7 @@ class AppWithNavigatior extends Component {
                 RNFS.unlink(downloadList[command.index].audio)
                 downloadList.splice(command.index,1);
                 AsyncStorage.setItem("downloadList",JSON.stringify(downloadList))
-                this.props.updateDownloadList(downloadList)
+                updateDownloadList(downloadList)
             }else{
                 downloadList[command.index].status="waiting"
             }

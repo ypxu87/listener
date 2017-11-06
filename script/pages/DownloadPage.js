@@ -84,8 +84,7 @@ class DownloadPage extends Component {
                                 <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
                             </View>
                             <TouchableOpacity onPress={()=>_self._delectItem(item)} style={{marginLeft:30, margin:30}}>
-                                <Image source={item.status=="downloading"||item.status=="waiting"?require("../../images/delete.png"):
-                                    require("../../images/download.png")} style={{width:30, height:30}}/>
+                                <Image source={require("../../images/delete.png")} style={{width:30, height:30}}/>
                             </TouchableOpacity>
                         </View>
                     </TouchableOpacity>

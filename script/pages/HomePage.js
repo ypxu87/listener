@@ -95,6 +95,7 @@ class HomePage extends Component {
                                 <Text style={{marginLeft:15,marginTop:3,fontSize:16}}>{this.props.player.data.title}</Text>
                                 <Text style={{marginLeft:15,marginTop:2,fontSize:10}}>{this.props.player.data.create_time}</Text>
                             </View>
+                            <Image style={{position:"absolute",width:30,height:30,right:20,top:10}} source={require('../../images/rightbutton.png')}/>
                         </View>
                     </TouchableOpacity>
                 </View>
@@ -110,9 +111,7 @@ const styles = StyleSheet.create({
     },
 
     itemStyle: {
-        // 主轴方向
         flexDirection:'row',
-        // 下边框
         backgroundColor:'white',
         width:'96%',
         marginLeft:'2%',
@@ -123,16 +122,13 @@ const styles = StyleSheet.create({
     },
 
     imageStyle: {
-        // 尺寸
         width:60,
         height:60,
-        // 边距
         marginLeft:10,
         margin:10
     },
 
     subItemStyle: {
-        // 对齐方式
         justifyContent:'space-around'
     }
 });
