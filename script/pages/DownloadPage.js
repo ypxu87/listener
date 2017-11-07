@@ -81,9 +81,9 @@ class DownloadPage extends Component {
                             <Image source={{uri:item.thumbnail}} style={{width:60, height:60, marginLeft:10, margin:10}}/>
                             <View style={{justifyContent:'space-around'}}>
                                 <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
-                                <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                                <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time.substring(0,10)}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=>_self._delectItem(item)} style={{marginLeft:30, margin:30}}>
+                            <TouchableOpacity onPress={()=>_self._delectItem(item)} style={{position:"absolute",right:20,top:15}}>
                                 <Image source={require("../../images/delete.png")} style={{width:30, height:30}}/>
                             </TouchableOpacity>
                         </View>

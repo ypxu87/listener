@@ -80,7 +80,7 @@ class HomePage extends Component {
                                                 <Image source={{uri:item.thumbnail}} style={styles.imageStyle}/>
                                                 <View style={styles.subItemStyle}>
                                                     <Text style={{marginTop:5, fontSize:17}}>{item.title}</Text>
-                                                    <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time}</Text>
+                                                    <Text style={{marginBottom:5, fontSize:13, color:'gray'}}>{item.create_time.substring(0,10)}</Text>
                                                 </View>
                                             </View>
                                         </TouchableOpacity>
@@ -93,7 +93,7 @@ class HomePage extends Component {
                                 <Image source={{uri:this.props.player.data.thumbnail}} style={{width:35,height:35,borderRadius:3,marginTop:7,marginLeft:15}}/>
                             <View style={{justifyContent:"center"}}>
                                 <Text style={{marginLeft:15,marginTop:3,fontSize:16}}>{this.props.player.data.title}</Text>
-                                <Text style={{marginLeft:15,marginTop:2,fontSize:10}}>{this.props.player.data.create_time}</Text>
+                                <Text style={{marginLeft:15,marginTop:2,fontSize:10}}>{this.props.player.data.create_time.substring(0,10)}</Text>
                             </View>
                             <Image style={{position:"absolute",width:30,height:30,right:20,top:10}} source={require('../../images/rightbutton.png')}/>
                         </View>
