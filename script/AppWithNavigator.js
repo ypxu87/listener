@@ -81,6 +81,7 @@ class AppWithNavigatior extends Component {
                                     headers:{
                                       Range:"bytes="+result.size+"-"+_self.props.downloader.downloadList[i].contentLength
                                     },
+                                    sourceId:_self.props.downloader.downloadList[i]._id,
                                     toFile: downloadDest,
                                     startPoint: result.size,
                                     endPoint: _self.props.downloader.downloadList[i].contentLength,
@@ -128,6 +129,7 @@ class AppWithNavigatior extends Component {
                                 toFile: downloadDest,
                                 startPoint: 0,
                                 endPoint: 0,
+                                sourceId:_self.props.downloader.downloadList[i]._id,
                                 background: true,
                                 begin: (res) => {
                                     console.log('begin', res);
